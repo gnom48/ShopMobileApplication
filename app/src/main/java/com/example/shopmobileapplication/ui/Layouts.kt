@@ -9,4 +9,6 @@ object Layouts {
     const val MAIN_LAYOUT = "MAIN_LAYOUT"
     const val BUCKET_LAYOUT = "BUCKET_LAYOUT"
     const val CATEGORIES_LAYOUT = "CATEGORIES_LAYOUT"
+    const val DETAILS_SCREEN = "DETAILS_SCREEN"
+
 }

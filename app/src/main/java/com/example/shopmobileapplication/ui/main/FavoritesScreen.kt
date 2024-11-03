@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.ui.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.composable.FavoriteIconButton

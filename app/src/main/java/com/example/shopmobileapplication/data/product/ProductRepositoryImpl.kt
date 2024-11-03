@@ -45,7 +45,7 @@ class ProductRepositoryImpl(
 
     override suspend fun getSearchResultByProductName(query: String): Result<List<Product>> = try {
         val allProducts = supabaseClient.postgrest["products"].select(filter = {
-            Product::name ilike query
+            Product::name ilike "%${query}%"
         }).decodeList<Product>()
         Result.success(allProducts)
     } catch (e: Exception) {

@@ -14,12 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.shopmobileapplication.viewmodel.SupabaseViewModel
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.main.menu.MainBottomNavigation
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
@@ -32,8 +30,7 @@ fun MainPreview() {
 
 @Composable
 fun Main(
-    mainNavController: NavController?,
-    viewModel: SupabaseViewModel = viewModel()
+    mainNavController: NavController?
 ) {
     val context = LocalContext.current
     val bottomMenuNavController = rememberNavController()
@@ -64,7 +61,7 @@ fun Main(
             ) {
                 NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
                     composable(BottomMenuItem.HomeScreen.route) {
-                        HomeScreen(navController = mainNavController)
+                        HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController)
                     }
                     composable(BottomMenuItem.FavoritesScreen.route) {
                         FavoritesScreen(navController = mainNavController)

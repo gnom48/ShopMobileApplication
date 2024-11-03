@@ -114,6 +114,20 @@ fun ProductDetails(
         productViewModel.getProductById(productId)
     }
 
+    LaunchedEffect(productViewModel.product) {
+        if (productViewModel.product != null) {
+            favoriteViewModel.getFavoriteList(UserViewModel.currentUser)
+            bucketViewModel.getBucketList(UserViewModel.currentUser)
+        }
+    }
+
+    LaunchedEffect(favoriteViewModel.favorites) {
+        isInFavorite = favoriteViewModel.favorites.map { it.productId }.contains(productId)
+    }
+    LaunchedEffect(bucketViewModel.buckets) {
+        isInBucket = bucketViewModel.buckets.map { it.productId }.contains(productId)
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(

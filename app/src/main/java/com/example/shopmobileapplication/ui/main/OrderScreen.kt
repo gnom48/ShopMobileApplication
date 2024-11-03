@@ -225,12 +225,11 @@ fun OrderScreen(
                 }
             }
 
-            var orderSum by remember { mutableStateOf<Double>(0.0) }
             LaunchedEffect(Unit) {
                 bucketViewModel.getBucketSum()
             }
 
-            OrderPrice(orderPrice = orderSum, delivery = 0.0) {
+            OrderPrice(orderPrice = bucketViewModel.bucketSum, delivery = 0.0) {
                 coroutineScope.launch {
                     // TODO: addOrder()
                 }

@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui
+package com.example.shopmobileapplication.ui.main.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

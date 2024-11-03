@@ -3,17 +3,14 @@ package com.example.shopmobileapplication.ui.main.menu
 import com.example.shopmobileapplication.R
 
 open class BottomMenuItem(
-    val title: String,
-    val iconId: Int,
-    val route: String
-) {
-    object HomeScreen: BottomMenuItem("Home", R.drawable.bottom_menu_icon_home, "HomeScreen")
-    object FavoritesScreen: BottomMenuItem("Favotite", R.drawable.bottom_menu_icon_favorite, "FavoritesScreen")
-    object BucketScreen: BottomMenuItem("Bucket", R.drawable.bucket_icon, "BucketScreen")
-    object NotificationsScreen: BottomMenuItem("Notifications", R.drawable.bottom_menu_icon_notifications, "NotificationsScreen")
-    object ProfileScreen: BottomMenuItem("Profile", R.drawable.bottom_menu_icon_profile, "ProfileScreen")
-
-    companion object {
-        const val DetailsScreen: String = "Details"
-    }
+    override val title: String,
+    override val iconId: Int,
+    override val route: String
+): NavigationItem() {
+    object HomeScreen: BottomMenuItem("Главная", R.drawable.bottom_menu_icon_home, "HomeScreen")
+    object FavoritesScreen: BottomMenuItem("Избранное", R.drawable.bottom_menu_icon_favorite, "FavoritesScreen")
+    object BucketScreen: BottomMenuItem("Корзина", R.drawable.bucket_icon, "BucketScreen")
+    object NotificationsScreen: BottomMenuItem("Уведомления", R.drawable.bottom_menu_icon_notifications, "NotificationsScreen")
+    object ProfileScreen: BottomMenuItem("Профиль", R.drawable.bottom_menu_icon_profile, "ProfileScreen")
 }
+

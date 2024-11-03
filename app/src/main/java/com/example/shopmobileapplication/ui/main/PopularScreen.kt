@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -19,7 +15,7 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.composable.FavoriteIconButton
@@ -66,8 +62,6 @@ fun PopularsScreen(
             .fillMaxSize()
             .background(whiteGreyBackground)
     ) {
-        var isBucketEmpty by remember { mutableStateOf(true) }
-
         CustomTopAppBar(
             title = stringResource(id = R.string.popular),
             onBackButtonClick = { navController!!.popBackStack() },

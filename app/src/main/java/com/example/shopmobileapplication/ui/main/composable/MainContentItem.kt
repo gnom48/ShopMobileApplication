@@ -1,5 +1,6 @@
 package com.example.shopmobileapplication.ui.main.composable
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,7 +49,7 @@ import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
+import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
 import com.example.shopmobileapplication.ui.theme.favoriteRed
@@ -58,6 +59,7 @@ import com.example.shopmobileapplication.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
+import com.example.shopmobileapplication.viewmodel.SupabaseViewModel
 import com.example.shopmobileapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -80,14 +82,18 @@ fun MainContentItem(
     navController: NavController?,
     isFavorite: Boolean = false,
     isInBucket: Boolean = false,
-    bucketViewModel: BucketViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
-        BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )
+    bucketViewModel: BucketViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
+            BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        )
     ),
-    favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
-        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )
-    )
+    favoriteViewModel: FavoriteViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!,
+        factory = FavoriteViewModelFactory(
+            FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        )
+    ),
+    supabaseViewModel: SupabaseViewModel = viewModel(),
 ) {
     val localCoroutineScope = rememberCoroutineScope()
 
@@ -103,7 +109,7 @@ fun MainContentItem(
             .background(Color.White)
             .background(lightGrayBackground)
             .clickable {
-                navController!!.navigate(BottomMenuItem.DetailsScreen + "/${product.id}")
+                navController!!.navigate(Layouts.DETAILS_SCREEN + "/${product.id}")
             }
     ) {
         Column(
@@ -156,8 +162,10 @@ fun MainContentItem(
             ) {
 
 //                var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-//                viewModel.getSignedUrlFromBucket(fileName = "1000013704.jpg") { url: String? ->
-//                    imageSignedUrl = "https://png.pngtree.com/png-clipart/20220510/original/pngtree-cool-pair-of-casual-shoes-with-blue-wave-patterned-icon-element-png-image_7692533.png" //url
+//                supabaseViewModel.getSignedUrlFromBucket(fileName = "1000013704.jpg") { url: String? ->
+//                    if (url != null) {
+//                        imageSignedUrl = "http://31.129.102.158:8000/" + url //"https://png.pngtree.com/png-clipart/20220510/original/pngtree-cool-pair-of-casual-shoes-with-blue-wave-patterned-icon-element-png-image_7692533.png"
+//                    }
 //                }
                 AsyncImage(
                     modifier = Modifier
@@ -166,7 +174,10 @@ fun MainContentItem(
                     model = imageUrl,
                     error = painterResource(id = R.drawable.default_shoes),
                     contentDescription = "Фото",
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.FillBounds,
+                    onError = { e ->
+                        Log.e("ERROR", e.toString())
+                    }
                 )
             }
 

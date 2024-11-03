@@ -1,7 +1,12 @@
 package com.example.shopmobileapplication.ui.main.composable
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -48,6 +53,7 @@ fun CustomLazyVerticalGrid(
     source: ArrayList<Product>,
     navController: NavController?,
     itemMinWidth: Int = 160,
+    enableScroll: Boolean = true,
     userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
         UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )),
@@ -69,22 +75,68 @@ fun CustomLazyVerticalGrid(
         }
     }
 
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth(),
-        columns = GridCells.Fixed(columns),
-        contentPadding = PaddingValues(5.dp)
-    ) {
-        items(source) { item ->
-            MainContentItem(
-                product = item,
-                seller = Seller(item.sellerId, "Best Seller", ""),
-                navController = navController,
-                imageUrl = item.image,
-                isFavorite = favoriteViewModel.favorites.map { it.productId }.contains(item.id),
-                isInBucket = bucketViewModel.buckets.map { it.productId }.contains(item.id),
-                bucketViewModel = bucketViewModel,
-                favoriteViewModel = favoriteViewModel
-            )
+    if (enableScroll) {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Fixed(columns),
+            contentPadding = PaddingValues(5.dp)
+        ) {
+            items(source) { item ->
+                MainContentItem(
+                    product = item,
+                    seller = Seller(item.sellerId, "Best Seller", ""),
+                    navController = navController,
+                    imageUrl = item.image,
+                    isFavorite = favoriteViewModel.favorites.map { it.productId }.contains(item.id),
+                    isInBucket = bucketViewModel.buckets.map { it.productId }.contains(item.id),
+                    bucketViewModel = bucketViewModel,
+                    favoriteViewModel = favoriteViewModel
+                )
+            }
+        }
+    } else {
+        NonScrollableGrid(
+            source = source,
+            navController = navController,
+            itemMinWidth = itemMinWidth,
+            userViewModel = userViewModel,
+            bucketViewModel = bucketViewModel,
+            favoriteViewModel = favoriteViewModel
+        )
+    }
+}
+
+@Composable
+fun NonScrollableGrid(
+    source: ArrayList<Product>,
+    navController: NavController?,
+    itemMinWidth: Int = 160,
+    userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
+        UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
+    )),
+    bucketViewModel: BucketViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
+        BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
+    )),
+    favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
+        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+    ))
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            for (item in source) {
+                Box(modifier = Modifier.width(itemMinWidth.dp)) {
+                    MainContentItem(
+                        product = item,
+                        seller = Seller(item.sellerId, "Best Seller", ""),
+                        navController = navController,
+                        imageUrl = item.image,
+                        isFavorite = favoriteViewModel.favorites.map { it.productId }.contains(item.id),
+                        isInBucket = bucketViewModel.buckets.map { it.productId }.contains(item.id),
+                        bucketViewModel = bucketViewModel,
+                        favoriteViewModel = favoriteViewModel
+                    )
+                }
+            }
         }
     }
 }

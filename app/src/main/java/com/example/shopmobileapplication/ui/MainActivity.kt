@@ -81,7 +81,12 @@ class MainActivity : ComponentActivity() {
                             navController = mainNavController
                         )
                     }
-                    composable(BottomMenuItem.DetailsScreen + "/{productId}") { backStackEntry ->
+                    composable(Layouts.BUCKET_LAYOUT) {
+                        BucketScreen(
+                            navController = mainNavController
+                        )
+                    }
+                    composable(Layouts.DETAILS_SCREEN + "/{productId}") { backStackEntry ->
                         val productId = backStackEntry.arguments?.getString("productId")
                         if (productId != null) {
                             ProductDetails(productId = productId, navController = mainNavController)

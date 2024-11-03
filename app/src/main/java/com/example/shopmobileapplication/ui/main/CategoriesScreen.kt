@@ -20,7 +20,7 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
 import com.example.shopmobileapplication.ui.main.composable.CategoriesPanel
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid

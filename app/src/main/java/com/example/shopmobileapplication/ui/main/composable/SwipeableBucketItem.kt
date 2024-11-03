@@ -1,7 +1,6 @@
 package com.example.shopmobileapplication.ui.main.composable
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.SurfaceScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
