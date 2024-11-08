@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
 @Preview
 fun OrderScreenPreview() {
     OrderScreen(
-        orderList = listOf(Order("", "", "", 5, "")),
+        orderList = listOf(Order("", "", 0, 5, "")),
         navController = null,
         onClose = {}
     )

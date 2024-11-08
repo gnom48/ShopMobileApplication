@@ -26,3 +26,5 @@ val favoriteIconRed = Color(0xFFF87265)
 
 val mainMenuIconSelected = Color(0xFF48B2E7)
 val mainMenuIconUnselected = Color(0xFF707B81)
+
+val unableBlue = Color(0xFF8DA8B6)

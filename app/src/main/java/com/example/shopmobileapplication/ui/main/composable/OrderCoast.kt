@@ -38,7 +38,9 @@ fun OrderPricePreview() {
 @Composable
 fun OrderPrice(orderPrice: Double, delivery: Double, onConfirm: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(10.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -86,7 +88,7 @@ fun OrderPrice(orderPrice: Double, delivery: Double, onConfirm: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier.padding(vertical = 5.dp),
-                text = "Оформить Заказ",
+                text = stringResource(R.string.lets_order),
                 style = ralewayOnButton
             )
         }

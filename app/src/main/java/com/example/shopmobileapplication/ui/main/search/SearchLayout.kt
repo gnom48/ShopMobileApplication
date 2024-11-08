@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main
+package com.example.shopmobileapplication.ui.main.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,8 +48,8 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.Layouts
+import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.greyText
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
@@ -242,7 +242,9 @@ fun SearchLayout(
         if (!isSearchBarActive) {
             IconButton(
                 onClick = {
-
+                    navController?.navigate(Layouts.FILTERS_SCREEN) {
+                        launchSingleTop = true
+                    }
                 },
                 modifier = Modifier
                     .background(shape = CircleShape, color = blueGradientStart)

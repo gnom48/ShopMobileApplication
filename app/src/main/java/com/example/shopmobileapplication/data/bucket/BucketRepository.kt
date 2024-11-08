@@ -3,6 +3,7 @@ package com.example.shopmobileapplication.data.bucket
 
 import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Product
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.viewmodel.BaseRepository
 
@@ -20,4 +21,6 @@ interface BucketRepository: BaseRepository {
     suspend fun getBucketSum(bucketList: List<Bucket>): Result<Double>
 
     suspend fun getProductsInBucket(user: User): Result<List<Product>>
+
+    suspend fun getProductsSizesInBucket(user: User): Result<List<ProductSize>>
 }

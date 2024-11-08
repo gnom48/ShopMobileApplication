@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Product
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.data.bucket.BucketRepository
 import kotlinx.coroutines.launch
@@ -64,7 +65,7 @@ class BucketViewModel(
                 bucketRepository.updateBucket(bucket).onSuccess {
                     _error.value = null
                     _buckets.value = _buckets.value.map { b ->
-                        if (b.productId == bucket.productId && b.userId == bucket.userId) {
+                        if (b.productExampleId == bucket.productExampleId && b.userId == bucket.userId) {
                             b.quantity = bucket.quantity; b
                         } else {
                             b
@@ -84,6 +85,9 @@ class BucketViewModel(
                 bucketRepository.deleteBucket(bucket).onSuccess {
                     _error.value = null
                     _buckets.value.toMutableList().remove(bucket)
+                    getBucketList(UserViewModel.currentUser)
+                    getProductsInBucket(UserViewModel.currentUser)
+                    getProductsSizesInBucket(UserViewModel.currentUser)
                     getBucketSum()
                 }.onFailure { e ->
                     _error.value = e
@@ -126,6 +130,23 @@ class BucketViewModel(
                 }.onFailure { e ->
                     _error.value = e
                     _productsInBucket.value = emptyList()
+                }
+            }
+        }
+    }
+
+    private val _productsSizesInBucket = mutableStateOf<List<ProductSize>>(emptyList())
+    val productsSizesInBucket by _productsSizesInBucket
+
+    suspend fun getProductsSizesInBucket(user: User) {
+        viewModelScope.launch {
+            withLoading {
+                bucketRepository.getProductsSizesInBucket(user).onSuccess {
+                    _productsSizesInBucket.value = it
+                    _error.value = null
+                }.onFailure { e ->
+                    _error.value = e
+                    _productsSizesInBucket.value = emptyList()
                 }
             }
         }

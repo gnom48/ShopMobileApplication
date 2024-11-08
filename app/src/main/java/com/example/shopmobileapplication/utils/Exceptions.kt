@@ -2,6 +2,7 @@ package com.example.shopmobileapplication.utils
 
 sealed class NumericException(msg: String): Exception(msg) {
     data object LessZeroException: NumericException("Number less zero")
+    data object MinGTEMaxException: NumericException("Min greater then max")
 }
 
 sealed class AuthException(msg: String): Exception(msg) {

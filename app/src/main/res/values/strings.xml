@@ -39,4 +39,14 @@
     <string name="delivery">Доставка</string>
     <string name="result_coast">Итого</string>
     <string name="order">Заказ</string>
+    <string name="no_colors">Нет расцветок</string>
+    <string name="no_sizes">Нет размеров</string>
+    <string name="products_in_bucket">Товаров в корзине:</string>
+    <string name="add">Добавить</string>
+    <string name="size">"Размер: "</string>
+    <string name="lets_order">Оформить Заказ</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="filters_search">Поиск по фильтрам</string>
+    <string name="lets_search">Искать</string>
+    <string name="error_maybe_incorrect">Возможно были введены некорректные значения!</string>
 </resources>

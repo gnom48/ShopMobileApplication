@@ -67,14 +67,15 @@ fun Main(
                         FavoritesScreen(navController = mainNavController)
                     }
                     composable(BottomMenuItem.NotificationsScreen.route) {
-                        Text("notifications")
+                        Box(modifier = Modifier.fillMaxSize().background(whiteGreyBackground)) {
+                            Text("notifications")
+                        }
                     }
                     composable(BottomMenuItem.ProfileScreen.route) {
-                        Text("profile")
+                        Box(modifier = Modifier.fillMaxSize().background(whiteGreyBackground)) {
+                            Text("profile")
+                        }
                     }
-//                    composable(BottomMenuItem.BucketScreen.route) {
-//                        BucketScreen(navController = mainNavController)
-//                    }
                 }
             }
         }

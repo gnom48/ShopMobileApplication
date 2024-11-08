@@ -22,11 +22,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,13 +40,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Favorite
+import com.example.shopmobileapplication.data.ImageStorage
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
+import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
@@ -59,7 +58,8 @@ import com.example.shopmobileapplication.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
-import com.example.shopmobileapplication.viewmodel.SupabaseViewModel
+import com.example.shopmobileapplication.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
 import com.example.shopmobileapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -69,19 +69,14 @@ fun MainContentItemPreview() {
     MainContentItem(
         Seller(0, "Best Seller", ""),
         Product("e456rgt7hk97h8", "Nike Air Max", 1, "Best shoes", 752.0, "", 0),
-        null,
-        null
+        null, { _,_ -> }
     )
 }
 
 @Composable
 fun MainContentItem(
-    seller: Seller,
-    product: Product,
-    imageUrl: String? = product.image,
-    navController: NavController?,
-    isFavorite: Boolean = false,
-    isInBucket: Boolean = false,
+    seller: Seller, product: Product, navController: NavController?,
+    onBucketClick: (Product, NavController) -> Unit,
     bucketViewModel: BucketViewModel = viewModel(
         viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
             BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
@@ -93,12 +88,17 @@ fun MainContentItem(
             FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
         )
     ),
-    supabaseViewModel: SupabaseViewModel = viewModel(),
+    productViewModel: ProductViewModel = remember {
+        ProductViewModelFactory(
+            ProductRepositoryImpl(null, SupabaseClient.client)
+        ).create(ProductViewModel::class.java)
+    }
 ) {
     val localCoroutineScope = rememberCoroutineScope()
 
-    var isFavoriteState by remember { mutableStateOf(isFavorite) }
-    var isInBucketState by remember { mutableStateOf(isInBucket) }
+    LaunchedEffect(Unit) {
+        productViewModel.getProductById(product.id)
+    }
 
     Surface(
         shape = RoundedCornerShape(18.dp),
@@ -125,16 +125,23 @@ fun MainContentItem(
             ) {
                 IconButton(
                     onClick = {
-                        if (!isFavoriteState) {
-                            localCoroutineScope.launch {
-                                favoriteViewModel.addFavorite(Favorite(UserViewModel.currentUser!!.id, product.id))
-                                isFavoriteState = true
+                        localCoroutineScope.launch {
+                            if (!productViewModel.isInFavorites) {
+                                favoriteViewModel.addFavorite(
+                                    Favorite(
+                                        UserViewModel.currentUser.id,
+                                        product.id
+                                    )
+                                )
+                            } else {
+                                favoriteViewModel.deleteFavorite(
+                                    Favorite(
+                                        UserViewModel.currentUser.id,
+                                        product.id
+                                    )
+                                )
                             }
-                        } else {
-                            localCoroutineScope.launch {
-                                favoriteViewModel.deleteFavorite(Favorite(UserViewModel.currentUser!!.id, product.id))
-                                isFavoriteState = false
-                            }
+                            productViewModel.getProductById(product.id)
                         }
                     },
                     modifier = Modifier
@@ -146,9 +153,9 @@ fun MainContentItem(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(5.dp),
-                        imageVector = if (isFavoriteState) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                        imageVector = if (productViewModel.isInFavorites) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = stringResource(R.string.favorites),
-                        tint = if (isFavoriteState) favoriteIconRed else Color.Black
+                        tint = if (productViewModel.isInFavorites) favoriteIconRed else Color.Black
                     )
                 }
             }
@@ -162,16 +169,16 @@ fun MainContentItem(
             ) {
 
 //                var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-//                supabaseViewModel.getSignedUrlFromBucket(fileName = "1000013704.jpg") { url: String? ->
+//                supabaseViewModel.getSignedUrlFromBucket(fileName = "1.png") { url: String? ->
 //                    if (url != null) {
-//                        imageSignedUrl = "http://31.129.102.158:8000/" + url //"https://png.pngtree.com/png-clipart/20220510/original/pngtree-cool-pair-of-casual-shoes-with-blue-wave-patterned-icon-element-png-image_7692533.png"
+//                        imageSignedUrl = "http://31.129.102.158:5556/static/" + url //"https://png.pngtree.com/png-clipart/20220510/original/pngtree-cool-pair-of-casual-shoes-with-blue-wave-patterned-icon-element-png-image_7692533.png"
 //                    }
 //                }
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxHeight()
                         .background(shape = RoundedCornerShape(18.dp), color = Color.Transparent),
-                    model = imageUrl,
+                    model = ImageStorage.getLink(product.image),
                     error = painterResource(id = R.drawable.default_shoes),
                     contentDescription = "Фото",
                     contentScale = ContentScale.FillBounds,
@@ -224,10 +231,7 @@ fun MainContentItem(
 
                 IconButton(
                     onClick = {
-                        localCoroutineScope.launch {
-                            bucketViewModel.addProductToBucket(Bucket(UserViewModel.currentUser!!.id, product.id, 1))
-                            isInBucketState = true
-                        }
+                        navController?.let { onBucketClick(product, it) }
                     },
                     modifier = Modifier
                         .background(
@@ -246,7 +250,7 @@ fun MainContentItem(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(10.dp),
-                            painter = if (isInBucketState) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
+                            painter = if (productViewModel.isInBucket) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
                             contentDescription = stringResource(R.string.bucket),
                             tint = Color.White
                         )

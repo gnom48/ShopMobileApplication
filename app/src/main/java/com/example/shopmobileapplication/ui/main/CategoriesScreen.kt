@@ -17,14 +17,16 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
 import com.example.shopmobileapplication.ui.main.composable.CategoriesPanel
+import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.viewmodel.ProductViewModel
 import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
@@ -70,29 +72,37 @@ fun CategoriesLayout(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(whiteGreyBackground)
-    ) {
-        CustomTopAppBar(
-            onBackButtonClick = {
-                navController!!.popBackStack()
-            },
-            title = stringResource(R.string.categories),
-            actionIconButton = { }
-        )
+    ModalBottomSheetProductSizes { onShow, onHide ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(whiteGreyBackground)
+        ) {
+            CustomTopAppBar(
+                onBackButtonClick = {
+                    navController!!.popBackStack()
+                },
+                title = stringResource(R.string.categories),
+                actionIconButton = { }
+            )
 
-        CategoriesPanel(
-            categories = productViewModel.productCategories,
-            selectedCategory = selected
-        ) { c ->
-            singleSelectedCategory = c
+            CategoriesPanel(
+                categories = productViewModel.productCategories,
+                selectedCategory = selected
+            ) { c ->
+                singleSelectedCategory = c
+            }
+
+            CustomLazyVerticalGrid(
+                source = ArrayList(productViewModel.products),
+                navController = navController,
+                onShowProductSizes = { p: Product? ->
+                    onShow(p)
+                },
+                onHideProductSizes = {
+                    onHide()
+                }
+            )
         }
-
-        CustomLazyVerticalGrid(
-            source = ArrayList(productViewModel.products),
-            navController = navController
-        )
     }
 }

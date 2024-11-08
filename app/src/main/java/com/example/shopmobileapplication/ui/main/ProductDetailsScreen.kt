@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -53,6 +51,7 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Favorite
 import com.example.shopmobileapplication.data.Product
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
@@ -60,7 +59,7 @@ import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.main.composable.BucketIconButton
 import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
-import com.example.shopmobileapplication.ui.main.composable.MiniProductContent
+import com.example.shopmobileapplication.ui.main.composable.SizeColorChipsRow
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
 import com.example.shopmobileapplication.ui.theme.favoriteRed
@@ -68,6 +67,7 @@ import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewaySubregular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
+import com.example.shopmobileapplication.ui.theme.unableBlue
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
@@ -84,16 +84,14 @@ object ProductDetailsHelper {
 
 @Composable
 @Preview
-fun ProductDetailsPreview() {
-    ProductDetails("", null, true, false)
+fun ProductDetailsScreenPreview() {
+    ProductDetailsScreen("", null)
 }
 
 @Composable
-fun ProductDetails(
+fun ProductDetailsScreen(
     productId: String,
     navController: NavController?,
-    isFavorite: Boolean = false,
-    isBucket: Boolean = false,
     productViewModel: ProductViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = ProductViewModelFactory(
         ProductRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )
@@ -107,25 +105,11 @@ fun ProductDetails(
     )
     )
 ) {
-    var isInFavorite by remember { mutableStateOf(isFavorite) }
-    var isInBucket by remember { mutableStateOf(isBucket) }
+    var selectedProductColorSize by remember { mutableStateOf<ProductSize?>(null) }
 
-    LaunchedEffect(productId) {
+    LaunchedEffect(Unit) {
         productViewModel.getProductById(productId)
-    }
-
-    LaunchedEffect(productViewModel.product) {
-        if (productViewModel.product != null) {
-            favoriteViewModel.getFavoriteList(UserViewModel.currentUser)
-            bucketViewModel.getBucketList(UserViewModel.currentUser)
-        }
-    }
-
-    LaunchedEffect(favoriteViewModel.favorites) {
-        isInFavorite = favoriteViewModel.favorites.map { it.productId }.contains(productId)
-    }
-    LaunchedEffect(bucketViewModel.buckets) {
-        isInBucket = bucketViewModel.buckets.map { it.productId }.contains(productId)
+        productViewModel.getProductsSizes(productId)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -136,7 +120,7 @@ fun ProductDetails(
             .background(whiteGreyBackground),
         topBar = {
             CustomTopAppBar(
-                title = stringResource(R.string.sneaker_shop),
+                title = stringResource(R.string.sneaker_shop), // TODO: seller name
                 onBackButtonClick = { navController!!.popBackStack() },
                 actionIconButton = {
                     BucketIconButton { }
@@ -151,38 +135,71 @@ fun ProductDetails(
                     modifier = Modifier.fillMaxHeight(),
                     onClick = {
                         coroutineScope.launch {
-                            favoriteViewModel.addFavorite(Favorite(userId = UserViewModel.currentUser.id, productId = productId))
+                            if (productViewModel.isInFavorites) {
+                                favoriteViewModel.deleteFavorite(
+                                    Favorite(
+                                        userId = UserViewModel.currentUser.id,
+                                        productId = productId
+                                    )
+                                )
+                            } else {
+                                favoriteViewModel.addFavorite(
+                                    Favorite(
+                                        userId = UserViewModel.currentUser.id,
+                                        productId = productId
+                                    )
+                                )
+                            }
+                            productViewModel.getProductById(productId)
                         }
                     },
                     shape = CircleShape,
-                    containerColor = if (isInFavorite) favoriteRed else lightGrayBackground
+                    containerColor = if (productViewModel.isInFavorites) favoriteRed else lightGrayBackground
                 ) {
                     Icon(
                         modifier = Modifier
                             .size(36.dp, 36.dp)
                             .padding(4.dp),
-                        imageVector = if (isInFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                        imageVector = if (productViewModel.isInFavorites) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = stringResource(R.string.favorites),
-                        tint = if (isInFavorite) favoriteIconRed else Color.Black
+                        tint = if (productViewModel.isInFavorites) favoriteIconRed else Color.Black
                     )
                 }
                 ExtendedFloatingActionButton(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(start = 30.dp),
-                    text = { Text(text = stringResource(R.string.to_bucket), style = ralewaySubtitle, color = Color.White) },
+                    text = { Text(text = if (productViewModel.isInBucket) stringResource(R.string.add) else stringResource(R.string.to_bucket), style = ralewaySubtitle, color = Color.White) },
                     onClick = {
-                        coroutineScope.launch {
-                            bucketViewModel.addProductToBucket(Bucket(userId = UserViewModel.currentUser.id, productId = productId, quantity = 1))
+                        if (selectedProductColorSize != null) {
+                            coroutineScope.launch {
+                                if (productViewModel.isInBucket) {
+                                    bucketViewModel.updateBucket(
+                                        Bucket(
+                                            userId = UserViewModel.currentUser.id,
+                                            productExampleId = selectedProductColorSize!!.id,
+                                            quantity = (bucketViewModel.buckets.find { it.productExampleId == selectedProductColorSize!!.id && it.userId == UserViewModel.currentUser.id }?.quantity ?: 0) + 1
+                                        )
+                                    )
+                                }
+                                bucketViewModel.addProductToBucket(
+                                    Bucket(
+                                        userId = UserViewModel.currentUser.id,
+                                        productExampleId = selectedProductColorSize!!.id,
+                                        quantity = 1
+                                    )
+                                )
+                                productViewModel.getProductById(productId)
+                            }
                         }
                     },
-                    backgroundColor = blueGradientStart,
+                    backgroundColor = if (selectedProductColorSize == null) unableBlue else blueGradientStart,
                     icon = {
                         Icon(
                             modifier = Modifier
                                 .size(36.dp, 36.dp)
                                 .padding(4.dp),
-                            painter = if (isInBucket) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
+                            painter = if (productViewModel.isInBucket) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
                             contentDescription = stringResource(R.string.bucket),
                             tint = Color.White
                         )
@@ -225,21 +242,14 @@ fun ProductDetails(
                         .graphicsLayer(rotationY = rotation), contentScale = ContentScale.FillWidth)
                 }
 
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    item {
-                        MiniProductContent(product = productViewModel.product!!) {
-
-                        }
-                    }
-                    items(listOf<Product>()) {
-                        MiniProductContent(product = it) {
-
-                        }
-                    }
+                SizeColorChipsRow(productSizes = productViewModel.productSizes) { _, productSize ->
+                    selectedProductColorSize = productSize
                 }
 
                 Text(text = productViewModel.product!!.description, style = ralewaySubregular, textAlign = TextAlign.Left, modifier = Modifier.padding(vertical = 5.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 70.dp), horizontalArrangement = Arrangement.End) {
                     TextButton(
                         modifier = Modifier.background(Color.Transparent),
                         onClick = { }

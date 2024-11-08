@@ -10,5 +10,6 @@ object Layouts {
     const val BUCKET_LAYOUT = "BUCKET_LAYOUT"
     const val CATEGORIES_LAYOUT = "CATEGORIES_LAYOUT"
     const val DETAILS_SCREEN = "DETAILS_SCREEN"
+    const val FILTERS_SCREEN = "FILTERS_SCREEN"
 
 }

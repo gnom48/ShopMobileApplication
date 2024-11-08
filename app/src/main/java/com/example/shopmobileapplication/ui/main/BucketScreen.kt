@@ -1,7 +1,6 @@
 package com.example.shopmobileapplication.ui.main
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,9 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.data.ImageStorage
 import com.example.shopmobileapplication.data.Order
-import com.example.shopmobileapplication.data.Product
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
@@ -55,6 +55,7 @@ import com.example.shopmobileapplication.ui.main.composable.OrderPrice
 import com.example.shopmobileapplication.ui.main.composable.ProductCountClicker
 import com.example.shopmobileapplication.ui.main.composable.ProductDeleteClicker
 import com.example.shopmobileapplication.ui.main.composable.SwipeableItemWithActions
+import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.viewmodel.BucketViewModel
@@ -66,6 +67,8 @@ import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.FlexibleSheetValue
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.util.UUID
 
 @Composable
 @Preview
@@ -82,11 +85,15 @@ fun BucketScreen(
     )
     )
 ) {
-    var orderList by remember { mutableStateOf<List<Order>>(mutableListOf()) }
-
     LaunchedEffect(Unit) {
         bucketViewModel.getBucketList(UserViewModel.currentUser)
         bucketViewModel.getProductsInBucket(UserViewModel.currentUser)
+    }
+
+    LaunchedEffect(bucketViewModel.buckets) {
+        if (bucketViewModel.buckets.isNotEmpty()) {
+            bucketViewModel.getProductsSizesInBucket(UserViewModel.currentUser)
+        }
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -106,9 +113,7 @@ fun BucketScreen(
             actionIconButton = { Spacer(modifier = Modifier.size(36.dp)) }
         )
 
-        var currentSheetTarget by remember {
-            mutableStateOf(FlexibleSheetValue.SlightlyExpanded)
-        }
+        var currentSheetTarget by remember { mutableStateOf(FlexibleSheetValue.SlightlyExpanded) }
         val sheetState = rememberFlexibleBottomSheetState(
             flexibleSheetSize = FlexibleSheetSize(
                 fullyExpanded = 1f,
@@ -131,6 +136,21 @@ fun BucketScreen(
         ) {
             when (currentSheetTarget) {
                 FlexibleSheetValue.FullyExpanded -> {
+                    val orderList by remember { mutableStateOf<MutableList<Order>>(mutableListOf()) }
+                    bucketViewModel.buckets.forEach { b ->
+                        bucketViewModel.productsSizesInBucket.find { it.id == b.productExampleId }?.let {
+                            orderList.add(
+                                Order(
+                                    id = UUID.randomUUID().toString(),
+                                    userId = UserViewModel.currentUser.id,
+                                    productExampleId = it.id,
+                                    quantity = b.quantity,
+                                    orderDate = LocalDateTime.now().toString()
+                                )
+                            )
+                        }
+                    }
+
                     OrderScreen(orderList = orderList, navController = navController, onClose = { currentSheetTarget = FlexibleSheetValue.SlightlyExpanded })
                 }
                 FlexibleSheetValue.SlightlyExpanded -> {
@@ -162,10 +182,10 @@ fun BucketScreen(
                     .background(whiteGreyBackground)
             ) {
                 item {
-                    Text(text = "${bucketViewModel.buckets.size} товаров", style = ralewaySubtitle, modifier = Modifier.padding(vertical = 5.dp))
+                    Text(text = stringResource(R.string.products_in_bucket) + " ${bucketViewModel.buckets.size}", style = ralewaySubtitle, modifier = Modifier.padding(vertical = 5.dp))
                 }
-                items(bucketViewModel.productsInBucket) { product: Product ->
-                    val currentPositionInBucket = bucketViewModel.buckets.find { it.productId == product.id }
+                items(bucketViewModel.productsSizesInBucket) { productSize: ProductSize ->
+                    val currentPositionInBucket = bucketViewModel.buckets.find { it.productExampleId == productSize.id }
                     if (currentPositionInBucket != null) {
                         SwipeableItemWithActions(
                             leftAction = {
@@ -191,11 +211,13 @@ fun BucketScreen(
                             Card(
                                 modifier = Modifier
                                     .height(130.dp)
-                                    .fillMaxWidth().background(whiteGreyBackground),
+                                    .fillMaxWidth()
+                                    .background(whiteGreyBackground),
                                 shape = RoundedCornerShape(16.dp),
                                 colors = CardDefaults.cardColors(contentColor = Color.White, containerColor = Color.White),
                                 elevation = CardDefaults.cardElevation(0.dp)
                             ) {
+                                val pr = bucketViewModel.productsInBucket.find { it.id == productSize.productId }
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -207,8 +229,8 @@ fun BucketScreen(
                                             .padding(10.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.onboard_2_all),
+                                        AsyncImage(
+                                            model = ImageStorage.getLink(pr?.image),
                                             contentDescription = "image",
                                             modifier = Modifier
                                                 .background(
@@ -227,13 +249,18 @@ fun BucketScreen(
                                             .padding(end = 10.dp)
                                     ) {
                                         Text(
-                                            text = product.name,
+                                            text = pr?.name ?: "",
                                             style = ralewaySubtitle,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                         Text(
-                                            text = "₽" + product.price,
-                                            style = ralewaySubtitle
+                                            text = stringResource(R.string.size) + productSize.sizeRus.toString(),
+                                            style = ralewayRegular,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = "₽" + pr?.price ?: "0.0",
+                                            style = ralewayRegular
                                         )
                                     }
                                 }

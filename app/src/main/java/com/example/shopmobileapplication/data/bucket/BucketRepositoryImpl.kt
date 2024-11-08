@@ -3,6 +3,7 @@ package com.example.shopmobileapplication.data.bucket
 import android.content.Context
 import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Product
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.utils.NumericException
@@ -26,7 +27,7 @@ class BucketRepositoryImpl(
         val bucket = supabaseClient.postgrest["buckets"].select(filter = {
             and {
                 Bucket::userId eq user.id
-                Bucket::productId eq product.id
+                Bucket::productExampleId eq product.id
             }
         }).decodeSingle<Bucket>()
         Result.success(bucket)
@@ -49,7 +50,7 @@ class BucketRepositoryImpl(
         ) {
             and {
                 Bucket::userId eq bucket.userId
-                Bucket::productId eq bucket.productId
+                Bucket::productExampleId eq bucket.productExampleId
             }
         }
         Result.success(true)
@@ -60,7 +61,7 @@ class BucketRepositoryImpl(
     override suspend fun deleteBucket(bucket: Bucket): Result<Boolean> = try {
         supabaseClient.postgrest["buckets"].delete(filter = {
             and {
-                Bucket::productId eq bucket.productId
+                Bucket::productExampleId eq bucket.productExampleId
                 Bucket::userId eq bucket.userId
             }
         })
@@ -71,13 +72,13 @@ class BucketRepositoryImpl(
 
     override suspend fun getBucketSum(bucketList: List<Bucket>): Result<Double> = try {
         var resSum = 0.0
-        bucketList.forEach { order ->
-            val product = ProductRepositoryImpl.getOneProductById(order.productId, supabaseClient)
+        bucketList.forEach { b ->
+            val product = ProductRepositoryImpl.getOneProductById(ProductRepositoryImpl.getProductByProductSize(b.productExampleId!!, supabaseClient)!!.id, supabaseClient)
             if (product == null) {
                 resSum = -1.0
                 return@forEach
             }
-            resSum += product.price * order.quantity
+            resSum += product.price * b.quantity
         }
         if (resSum < 0) {
             throw NumericException.LessZeroException
@@ -88,15 +89,29 @@ class BucketRepositoryImpl(
     }
 
     override suspend fun getProductsInBucket(user: User): Result<List<Product>> = try {
-        val favorites = supabaseClient.postgrest["buckets"].select(filter = {
+        val buckets = supabaseClient.postgrest["buckets"].select(filter = {
             Bucket::userId eq user.id
         }).decodeList<Bucket>()
         val products = mutableListOf<Product>()
-        favorites.forEach { fav ->
-            ProductRepositoryImpl.getOneProductById(fav.productId, supabaseClient)
+        buckets.forEach { b ->
+            ProductRepositoryImpl.getOneProductById(ProductRepositoryImpl.getProductByProductSize(b.productExampleId!!, supabaseClient)!!.id, supabaseClient)
                 ?.let { products.add(it) }
         }
         Result.success(products.toList())
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    override suspend fun getProductsSizesInBucket(user: User): Result<List<ProductSize>> = try {
+        val buckets = supabaseClient.postgrest["buckets"].select(filter = {
+            Bucket::userId eq user.id
+        }).decodeList<Bucket>()
+        val products = mutableListOf<ProductSize>()
+        buckets.forEach { b ->
+            ProductRepositoryImpl.getOneProductSizeById(b.productExampleId!!, supabaseClient)
+                ?.let { products.add(it) }
+        }
+        Result.success(products)
     } catch (e: Exception) {
         Result.failure(e)
     }

@@ -21,8 +21,9 @@ import com.example.shopmobileapplication.ui.greetings.Onboard
 import com.example.shopmobileapplication.ui.main.BucketScreen
 import com.example.shopmobileapplication.ui.main.CategoriesLayout
 import com.example.shopmobileapplication.ui.main.Main
-import com.example.shopmobileapplication.ui.main.ProductDetails
+import com.example.shopmobileapplication.ui.main.ProductDetailsScreen
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
+import com.example.shopmobileapplication.ui.main.search.FiltersScreen
 import com.example.shopmobileapplication.ui.theme.ShopMobileApplicationTheme
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.viewmodel.UserViewModel
@@ -89,8 +90,11 @@ class MainActivity : ComponentActivity() {
                     composable(Layouts.DETAILS_SCREEN + "/{productId}") { backStackEntry ->
                         val productId = backStackEntry.arguments?.getString("productId")
                         if (productId != null) {
-                            ProductDetails(productId = productId, navController = mainNavController)
+                            ProductDetailsScreen(productId = productId, navController = mainNavController)
                         }
+                    }
+                    composable(Layouts.FILTERS_SCREEN) {
+                        FiltersScreen(navController = mainNavController)
                     }
                 }
             }

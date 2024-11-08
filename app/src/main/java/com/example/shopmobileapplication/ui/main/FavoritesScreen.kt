@@ -19,12 +19,14 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.composable.FavoriteIconButton
+import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
@@ -65,34 +67,45 @@ fun FavoritesScreen(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(whiteGreyBackground)
-    ) {
-        CustomTopAppBar(
-            title = stringResource(id = R.string.favorites),
-            onBackButtonClick = {
+    ModalBottomSheetProductSizes { onShow, onHide ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(whiteGreyBackground)
+        ) {
+            CustomTopAppBar(
+                title = stringResource(id = R.string.favorites),
+                onBackButtonClick = {
                     navController!!.navigate(BottomMenuItem.HomeScreen.route) {
-                    launchSingleTop = true
+                        launchSingleTop = true
+                    }
+                },
+                actionIconButton = {
+                    FavoriteIconButton { }
                 }
-            },
-            actionIconButton = {
-                FavoriteIconButton { }
-            }
-        )
+            )
 
-        if (favoriteViewModel.productsInFavorite.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(style = ralewaySubtitle, text = stringResource(R.string.empty_favorite_data), textAlign = TextAlign.Center)
+            if (favoriteViewModel.productsInFavorite.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(style = ralewaySubtitle, text = stringResource(R.string.empty_favorite_data), textAlign = TextAlign.Center)
+                }
             }
+
+            CustomLazyVerticalGrid(
+                source = ArrayList(favoriteViewModel.productsInFavorite),
+                navController = navController,
+                onShowProductSizes = { p: Product? ->
+                    onShow(p)
+                },
+                onHideProductSizes = {
+                    onHide()
+                }
+            )
         }
-
-        CustomLazyVerticalGrid(source = ArrayList(favoriteViewModel.productsInFavorite), navController = navController)
     }
 }

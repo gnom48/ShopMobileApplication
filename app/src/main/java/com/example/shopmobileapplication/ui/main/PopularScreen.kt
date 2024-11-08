@@ -13,12 +13,14 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.composable.FavoriteIconButton
+import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.viewmodel.ProductViewModel
 import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
@@ -57,19 +59,30 @@ fun PopularsScreen(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(whiteGreyBackground)
-    ) {
-        CustomTopAppBar(
-            title = stringResource(id = R.string.popular),
-            onBackButtonClick = { navController!!.popBackStack() },
-            actionIconButton = {
-                FavoriteIconButton { }
-            }
-        )
+    ModalBottomSheetProductSizes { onShow, onHide ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(whiteGreyBackground)
+        ) {
+            CustomTopAppBar(
+                title = stringResource(id = R.string.popular),
+                onBackButtonClick = { navController!!.popBackStack() },
+                actionIconButton = {
+                    FavoriteIconButton { }
+                }
+            )
 
-        CustomLazyVerticalGrid(source = ArrayList(productViewModel.products), navController = navController)
+            CustomLazyVerticalGrid(
+                source = ArrayList(productViewModel.products),
+                navController = navController,
+                onShowProductSizes = { p: Product? ->
+                    onShow(p)
+                },
+                onHideProductSizes = {
+                    onHide()
+                }
+            )
+        }
     }
 }

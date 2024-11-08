@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
@@ -48,7 +49,10 @@ import com.example.shopmobileapplication.ui.main.composable.CategoriesPanel
 import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.composable.DriverMenuIconButton
+import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
+import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.main.menu.DrawerMenuContent
+import com.example.shopmobileapplication.ui.main.search.SearchLayout
 import com.example.shopmobileapplication.ui.theme.White
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
@@ -94,160 +98,152 @@ fun HomeScreen(
         )
     }
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val drawerScope = rememberCoroutineScope()
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.fillMaxSize(),
-                drawerContainerColor = blueGradientStart,
-                drawerShape = RectangleShape
-            ) {
-                DrawerMenuContent(
-                    navController = navController,
-                    bottomNavController = bottomNavController,
-                    drawerScope = drawerScope,
-                    drawerState = drawerState
-                )
-            }
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(whiteGreyBackground)
+    ModalBottomSheetProductSizes { onShow, onHide ->
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val drawerScope = rememberCoroutineScope()
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    modifier = Modifier.fillMaxSize(),
+                    drawerContainerColor = blueGradientStart,
+                    drawerShape = RectangleShape
+                ) {
+                    DrawerMenuContent(
+                        navController = navController,
+                        bottomNavController = bottomNavController,
+                        drawerScope = drawerScope,
+                        drawerState = drawerState
+                    )
+                }
+            },
         ) {
-            TopAppBar(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = whiteGreyBackground),
-                title = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            modifier = Modifier.size(14.dp),
-                            painter = painterResource(id = R.drawable.bzdylinka_on_main_app_top_panel),
-                            contentDescription = "nothing"
-                        )
-                        Text(
-                            text = stringResource(R.string.main_title),
-                            style = ralewayTitle
-                        )
-                    }
-                },
-                navigationIcon = {
-                    DriverMenuIconButton {
-                        drawerScope.launch {
-                            if (drawerState.isClosed) drawerState.open()
-                            else drawerState.close()
+                    .fillMaxSize()
+                    .background(whiteGreyBackground)
+            ) {
+                TopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = whiteGreyBackground),
+                    title = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(id = R.drawable.bzdylinka_on_main_app_top_panel),
+                                contentDescription = "nothing"
+                            )
+                            Text(
+                                text = stringResource(R.string.main_title),
+                                style = ralewayTitle
+                            )
+                        }
+                    },
+                    navigationIcon = {
+                        DriverMenuIconButton {
+                            drawerScope.launch {
+                                if (drawerState.isClosed) drawerState.open()
+                                else drawerState.close()
+                            }
+                        }
+                    },
+                    actions = {
+                        BucketIconButton {
+                            bottomNavController?.navigate(BottomMenuItem.BucketScreen.route) {
+                                launchSingleTop = true
+                            }
                         }
                     }
-                },
-                actions = {
-                    BucketIconButton {
-                        navController!!.navigate(Layouts.BUCKET_LAYOUT) {
+                )
+
+                SearchLayout(navController = navController, productViewModel = productViewModel)
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(vertical = 10.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    CategoriesPanel(null, productViewModel.productCategories) { selectedCategory: ProductCategory ->
+                        navController!!.navigate(Layouts.CATEGORIES_LAYOUT) {
                             launchSingleTop = true
                         }
                     }
-                }
-            )
 
-            SearchLayout(navController = navController, productViewModel = productViewModel)
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(vertical = 10.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                CategoriesPanel(null, productViewModel.productCategories) { selectedCategory: ProductCategory ->
-                    navController!!.navigate(Layouts.CATEGORIES_LAYOUT) {
-                        launchSingleTop = true
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Популярное", style = ralewaySubtitle)
-
-                    TextButton(
-                        onClick = {
-
-                        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Все", style = ralewaySubtitle, color = blueGradientStart)
-                    }
-                }
+                        Text(text = "Популярное", style = ralewaySubtitle)
 
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-//            ) {
-//                ArrayList(productViewModel.products).forEach { item ->
-//                    Box(
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .padding(5.dp)
-//                    ) {
-//                        MainContentItem(
-//                            product = item,
-//                            seller = Seller(item.sellerId, "Best Seller", ""),
-//                            navController = navController,
-//                            imageUrl = item.image
-//                        )
-//                    }
-//                }
-//            }
+                        TextButton(
+                            onClick = {
 
-                CustomLazyVerticalGrid(source = ArrayList(productViewModel.products), navController = navController, enableScroll = false)
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Акции", style = ralewaySubtitle)
-
-                    TextButton(
-                        onClick = {
-
+                            }
+                        ) {
+                            Text(text = "Все", style = ralewaySubtitle, color = blueGradientStart)
                         }
-                    ) {
-                        Text(text = "Все", style = ralewaySubtitle, color = blueGradientStart)
                     }
-                }
 
-                Surface(
-                    shape = RoundedCornerShape(18),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(whiteGreyBackground)
-                        .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-                    shadowElevation = 3.dp
-                ) {
-                    Image(
+                    CustomLazyVerticalGrid(
+                        source = ArrayList(productViewModel.products),
+                        navController = navController,
+                        enableScroll = false,
+                        onShowProductSizes = { p: Product? ->
+                            onShow(p)
+                        },
+                        onHideProductSizes = {
+                            onHide()
+                        }
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Акции", style = ralewaySubtitle)
+
+                        TextButton(
+                            onClick = {
+
+                            }
+                        ) {
+                            Text(text = "Все", style = ralewaySubtitle, color = blueGradientStart)
+                        }
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(18),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .background(White)
-                            .padding(5.dp),
-                        painter = painterResource(id = R.drawable.sales),
-                        contentDescription = "Акция",
-                        contentScale = ContentScale.FillWidth
-                    )
+                            .background(whiteGreyBackground)
+                            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+                        shadowElevation = 3.dp
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .background(White)
+                                .padding(5.dp),
+                            painter = painterResource(id = R.drawable.sales),
+                            contentDescription = "Акция",
+                            contentScale = ContentScale.FillWidth
+                        )
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.shopmobileapplication.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ sealed class BaseViewModel: ViewModel() {
             throw e
         } finally {
             loadingState.value = false
+            Log.d("ViewModel", "${this.javaClass.name} $block")
         }
     }
 }

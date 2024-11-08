@@ -2,7 +2,9 @@ package com.example.shopmobileapplication.data.product
 
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
+import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
+import com.example.shopmobileapplication.ui.main.search.ProductFilter
 import com.example.shopmobileapplication.viewmodel.BaseRepository
 
 interface ProductRepository: BaseRepository {
@@ -19,4 +21,8 @@ interface ProductRepository: BaseRepository {
     suspend fun getProductsInFavorite(user: User): Result<List<Product>>
 
     suspend fun getProductsCategories(): Result<List<ProductCategory>>
+
+    suspend fun getProductSizes(productId: String): Result<List<ProductSize>>
+
+    suspend fun getSearchResultByFilters(filter: ProductFilter): Result<List<Product>>
 }
