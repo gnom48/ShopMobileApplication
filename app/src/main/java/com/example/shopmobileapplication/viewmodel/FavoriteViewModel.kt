@@ -46,7 +46,9 @@ class FavoriteViewModel(
             viewModelScope.launch {
                 favoriteRepository.addProductToFavorite(favorite).onSuccess {
                     _error.value = null
-                    _favorites.value.toMutableList().add(favorite)
+                    val tmp = _favorites.value.toMutableList()
+                    tmp.add(favorite)
+                    _favorites.value = tmp
                 }.onFailure { e ->
                     _error.value = e
                 }
@@ -59,7 +61,9 @@ class FavoriteViewModel(
             viewModelScope.launch {
                 favoriteRepository.deleteFavorite(favorite).onSuccess {
                     _error.value = null
-                    _favorites.value.toMutableList().remove(favorite)
+                    val tmp = _favorites.value.toMutableList()
+                    tmp.remove(favorite)
+                    _favorites.value = tmp
                 }.onFailure { e ->
                     _error.value = e
                 }

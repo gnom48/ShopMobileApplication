@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -20,18 +21,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.shopmobileapplication.data.Favorite
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.data.user.UserRepositoryImpl
 import com.example.shopmobileapplication.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
 import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
 import com.example.shopmobileapplication.viewmodel.UserViewModel
-import com.example.shopmobileapplication.viewmodel.UserViewModelFactory
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview
@@ -55,9 +56,6 @@ fun CustomLazyVerticalGrid(
     onShowProductSizes: (product: Product?) -> Unit, onHideProductSizes: () -> Unit,
     itemMinWidth: Int = 160,
     enableScroll: Boolean = true,
-    userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
-        UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )),
     bucketViewModel: BucketViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
         BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )),
@@ -65,15 +63,14 @@ fun CustomLazyVerticalGrid(
         FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
     ))
 ) {
+    val localCoroutineScope = rememberCoroutineScope()
+
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val columns = screenWidth / itemMinWidth
 
-    userViewModel.getCurrentUserInfo()
-    LaunchedEffect(userViewModel.user) {
-        if (userViewModel.user != null) {
-            bucketViewModel.getBucketList(userViewModel.user!!)
-            favoriteViewModel.getFavoriteList(userViewModel.user!!)
-        }
+    LaunchedEffect(favoriteViewModel.favorites, bucketViewModel.buckets) {
+        bucketViewModel.getProductsInBucket(UserViewModel.currentUser)
+        favoriteViewModel.getFavoriteList(UserViewModel.currentUser)
     }
 
     if (enableScroll) {
@@ -83,32 +80,79 @@ fun CustomLazyVerticalGrid(
             contentPadding = PaddingValues(5.dp)
         ) {
             items(source) { item ->
+                val isInFavorite = favoriteViewModel.favorites.map { it.productId }.contains(item.id)
+                val isInBucket = bucketViewModel.productsInBucket.map { it.id }.contains(item.id)
+
                 MainContentItem(
                     product = item,
                     seller = Seller(item.sellerId, "Best Seller", ""),
                     navController = navController,
+                    isInBucket = isInBucket,
+                    isInFavorite = isInFavorite,
                     onBucketClick = { prod: Product, nav: NavController ->
                         onShowProductSizes(prod)
                     },
-                    bucketViewModel = bucketViewModel,
-                    favoriteViewModel = favoriteViewModel
+                    onFavoriteClick = { prod: Product, nav: NavController ->
+                        localCoroutineScope.launch {
+                            if (!isInFavorite) {
+                                favoriteViewModel.addFavorite(
+                                    Favorite(
+                                        UserViewModel.currentUser.id,
+                                        prod.id
+                                    )
+                                )
+                            } else {
+                                favoriteViewModel.deleteFavorite(
+                                    Favorite(
+                                        UserViewModel.currentUser.id,
+                                        prod.id
+                                    )
+                                )
+                            }
+                        }
+                    }
                 )
             }
         }
     } else {
         Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 for (item in source) {
+                    val isInFavorite = favoriteViewModel.favorites.map { it.productId }.contains(item.id)
+                    val isInBucket = bucketViewModel.productsInBucket.map { it.id }.contains(item.id)
+
                     Box(modifier = Modifier.width(itemMinWidth.dp)) {
                         MainContentItem(
                             seller = Seller(item.sellerId, "Best Seller", ""),
                             product = item,
                             navController = navController,
+                            isInBucket = isInBucket,
+                            isInFavorite = isInFavorite,
                             onBucketClick = { prod: Product, nav: NavController ->
                                 onShowProductSizes(prod)
                             },
-                            bucketViewModel = bucketViewModel,
-                            favoriteViewModel = favoriteViewModel
+                            onFavoriteClick = { prod: Product, nav: NavController ->
+                                localCoroutineScope.launch {
+                                    if (!isInFavorite) {
+                                        favoriteViewModel.addFavorite(
+                                            Favorite(
+                                                UserViewModel.currentUser.id,
+                                                prod.id
+                                            )
+                                        )
+                                    } else {
+                                        favoriteViewModel.deleteFavorite(
+                                            Favorite(
+                                                UserViewModel.currentUser.id,
+                                                prod.id
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         )
                     }
                 }
@@ -116,3 +160,4 @@ fun CustomLazyVerticalGrid(
         }
     }
 }
+

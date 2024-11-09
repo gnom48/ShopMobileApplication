@@ -48,7 +48,9 @@ class BucketViewModel(
         viewModelScope.launch {
             withLoading {
                 bucketRepository.addProductToBucket(bucket).onSuccess {
-                    _buckets.value.toMutableList().add(bucket)
+                    val tmp = _buckets.value.toMutableList()
+                    tmp.add(bucket)
+                    _buckets.value = tmp
                     _error.value = null
                     getBucketSum()
                 }.onFailure { e ->
@@ -84,7 +86,9 @@ class BucketViewModel(
             withLoading {
                 bucketRepository.deleteBucket(bucket).onSuccess {
                     _error.value = null
-                    _buckets.value.toMutableList().remove(bucket)
+                    val tmp = _buckets.value.toMutableList()
+                    tmp.remove(bucket)
+                    _buckets.value = tmp
                     getBucketList(UserViewModel.currentUser)
                     getProductsInBucket(UserViewModel.currentUser)
                     getProductsSizesInBucket(UserViewModel.currentUser)

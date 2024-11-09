@@ -22,46 +22,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.Favorite
 import com.example.shopmobileapplication.data.ImageStorage
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
-import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
-import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
-import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
 import com.example.shopmobileapplication.ui.theme.favoriteRed
 import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
-import com.example.shopmobileapplication.viewmodel.BucketViewModel
-import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
-import com.example.shopmobileapplication.viewmodel.UserViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 @Preview
@@ -69,7 +50,9 @@ fun MainContentItemPreview() {
     MainContentItem(
         Seller(0, "Best Seller", ""),
         Product("e456rgt7hk97h8", "Nike Air Max", 1, "Best shoes", 752.0, "", 0),
-        null, { _,_ -> }
+        null, { _, _ -> }, { _, _ -> },
+//        remember {mutableStateOf(false)}, remember {mutableStateOf(false)}
+        false, false
     )
 }
 
@@ -77,29 +60,10 @@ fun MainContentItemPreview() {
 fun MainContentItem(
     seller: Seller, product: Product, navController: NavController?,
     onBucketClick: (Product, NavController) -> Unit,
-    bucketViewModel: BucketViewModel = viewModel(
-        viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
-            BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
-        )
-    ),
-    favoriteViewModel: FavoriteViewModel = viewModel(
-        viewModelStoreOwner = LocalViewModelStoreOwner.current!!,
-        factory = FavoriteViewModelFactory(
-            FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
-        )
-    ),
-    productViewModel: ProductViewModel = remember {
-        ProductViewModelFactory(
-            ProductRepositoryImpl(null, SupabaseClient.client)
-        ).create(ProductViewModel::class.java)
-    }
+    onFavoriteClick: (Product, NavController) -> Unit,
+    isInFavorite: Boolean,
+    isInBucket: Boolean
 ) {
-    val localCoroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        productViewModel.getProductById(product.id)
-    }
-
     Surface(
         shape = RoundedCornerShape(18.dp),
         modifier = Modifier
@@ -125,23 +89,8 @@ fun MainContentItem(
             ) {
                 IconButton(
                     onClick = {
-                        localCoroutineScope.launch {
-                            if (!productViewModel.isInFavorites) {
-                                favoriteViewModel.addFavorite(
-                                    Favorite(
-                                        UserViewModel.currentUser.id,
-                                        product.id
-                                    )
-                                )
-                            } else {
-                                favoriteViewModel.deleteFavorite(
-                                    Favorite(
-                                        UserViewModel.currentUser.id,
-                                        product.id
-                                    )
-                                )
-                            }
-                            productViewModel.getProductById(product.id)
+                        navController?.let {
+                            onFavoriteClick(product, it)
                         }
                     },
                     modifier = Modifier
@@ -153,9 +102,9 @@ fun MainContentItem(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(5.dp),
-                        imageVector = if (productViewModel.isInFavorites) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                        imageVector = if (isInFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = stringResource(R.string.favorites),
-                        tint = if (productViewModel.isInFavorites) favoriteIconRed else Color.Black
+                        tint = if (isInFavorite) favoriteIconRed else Color.Black
                     )
                 }
             }
@@ -231,7 +180,9 @@ fun MainContentItem(
 
                 IconButton(
                     onClick = {
-                        navController?.let { onBucketClick(product, it) }
+                        navController?.let {
+                            onBucketClick(product, it)
+                        }
                     },
                     modifier = Modifier
                         .background(
@@ -250,7 +201,7 @@ fun MainContentItem(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(10.dp),
-                            painter = if (productViewModel.isInBucket) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
+                            painter = if (isInBucket) painterResource(id = R.drawable.baseline_add_24) else painterResource(id = R.drawable.bucket_icon),
                             contentDescription = stringResource(R.string.bucket),
                             tint = Color.White
                         )
