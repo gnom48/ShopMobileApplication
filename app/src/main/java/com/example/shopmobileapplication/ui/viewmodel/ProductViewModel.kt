@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.viewmodel
+package com.example.shopmobileapplication.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -11,7 +11,7 @@ import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.data.product.ProductRepository
-import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
+import com.example.shopmobileapplication.ui.main.components.CategoriesHelper
 import com.example.shopmobileapplication.ui.main.search.ProductFilter
 import kotlinx.coroutines.launch
 

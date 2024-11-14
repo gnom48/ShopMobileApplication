@@ -22,17 +22,17 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
-import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
-import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
-import com.example.shopmobileapplication.ui.main.composable.FavoriteIconButton
-import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGrid
+import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.components.FavoriteIconButton
+import com.example.shopmobileapplication.ui.main.components.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
-import com.example.shopmobileapplication.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 
 @Preview
 @Composable

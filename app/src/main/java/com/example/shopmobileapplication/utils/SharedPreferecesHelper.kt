@@ -9,6 +9,7 @@ class SharedPreferecesHelper(private val context: Context) {
         const val accessTokenKey: String = "accessToken"
         const val lastEmailKey: String = "lastEmail"
         const val lastPasswordKey: String = "lastPassword"
+        const val seenOnBoardKey: String = "seenOnBoard"
     }
 
     fun saveStringData(key: String, data: String?) {

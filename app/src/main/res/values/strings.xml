@@ -49,4 +49,6 @@
     <string name="filters_search">Поиск по фильтрам</string>
     <string name="lets_search">Искать</string>
     <string name="error_maybe_incorrect">Возможно были введены некорректные значения!</string>
+    <string name="price_from">От</string>
+    <string name="price_to">До</string>
 </resources>

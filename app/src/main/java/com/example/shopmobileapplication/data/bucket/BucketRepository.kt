@@ -5,7 +5,7 @@ import com.example.shopmobileapplication.data.Bucket
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
-import com.example.shopmobileapplication.viewmodel.BaseRepository
+import com.example.shopmobileapplication.ui.viewmodel.BaseRepository
 
 interface BucketRepository: BaseRepository {
     suspend fun getBucketList(user: User): Result<List<Bucket>>

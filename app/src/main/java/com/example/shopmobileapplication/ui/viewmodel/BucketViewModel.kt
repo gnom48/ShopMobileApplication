@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.viewmodel
+package com.example.shopmobileapplication.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf

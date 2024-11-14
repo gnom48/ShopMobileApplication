@@ -21,15 +21,15 @@ import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
-import com.example.shopmobileapplication.ui.main.composable.CategoriesPanel
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
-import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
-import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
-import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
+import com.example.shopmobileapplication.ui.main.components.CategoriesHelper
+import com.example.shopmobileapplication.ui.main.components.CategoriesPanel
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGrid
+import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.components.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
 
 @Preview
 @Composable

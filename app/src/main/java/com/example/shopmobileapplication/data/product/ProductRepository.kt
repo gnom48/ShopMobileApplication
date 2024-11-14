@@ -5,7 +5,7 @@ import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.ui.main.search.ProductFilter
-import com.example.shopmobileapplication.viewmodel.BaseRepository
+import com.example.shopmobileapplication.ui.viewmodel.BaseRepository
 
 interface ProductRepository: BaseRepository {
     suspend fun getProductById(id: String): Result<Product>

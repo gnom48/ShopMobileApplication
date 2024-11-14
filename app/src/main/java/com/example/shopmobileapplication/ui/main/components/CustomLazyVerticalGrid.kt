@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,11 +27,11 @@ import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.viewmodel.BucketViewModel
-import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
-import com.example.shopmobileapplication.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,10 +58,12 @@ fun CustomLazyVerticalGrid(
     enableScroll: Boolean = true,
     bucketViewModel: BucketViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
         BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )),
+    )
+    ),
     favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
         FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    ))
+    )
+    )
 ) {
     val localCoroutineScope = rememberCoroutineScope()
 

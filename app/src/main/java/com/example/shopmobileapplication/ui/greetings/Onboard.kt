@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,9 +47,7 @@ import kotlinx.coroutines.launch
 @Preview
 @Composable
 fun OnboardPreview() {
-    Onboard {
-
-    }
+    Onboard { }
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -109,7 +107,7 @@ fun Onboard(goToAuth: () -> Unit) {
             }
         ) {
             Text (
-                text = if (currentPage == 0) stringResource(R.string.lets_start) else stringResource(R.string.next),
+                text = if (currentPage != 2) stringResource(R.string.next) else stringResource(R.string.lets_start),
                 color = Color.Black,
                 modifier = Modifier.padding(vertical = 5.dp)
             )
@@ -135,7 +133,8 @@ fun FirstFragment() {
             lineHeight = 40.sp
         )
         Image(
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier.fillMaxHeight()
+                .testTag(R.drawable.onboard_1_all.toString()),
             contentScale = ContentScale.FillHeight,
             painter = painterResource(R.drawable.onboard_1_all),
             contentDescription = stringResource(id = R.string.welcome)
@@ -155,6 +154,7 @@ fun SecondFragment() {
     ) {
         Image(
             modifier = Modifier
+                .testTag(R.drawable.onboard_2_all.toString())
                 .fillMaxWidth()
                 .padding(end = 20.dp),
             contentScale = ContentScale.Crop,
@@ -200,6 +200,7 @@ fun ThirdFragment() {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
+                .testTag(R.drawable.onboard_3_all.toString())
                 .padding(end = 20.dp),
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,

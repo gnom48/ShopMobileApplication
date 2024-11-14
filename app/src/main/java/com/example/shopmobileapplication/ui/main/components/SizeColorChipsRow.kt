@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll

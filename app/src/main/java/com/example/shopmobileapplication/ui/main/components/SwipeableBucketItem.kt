@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background

@@ -45,17 +45,17 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
-import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubregular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
 import com.example.shopmobileapplication.utils.getAllSizesRus
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
@@ -141,7 +141,7 @@ fun FiltersScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "От", style = ralewaySubregular)
+                Text(text = stringResource(R.string.price_from), style = ralewaySubregular)
                 var minPrice by remember { mutableStateOf<String>("") }
                 OutlinedTextField(
                     modifier = Modifier
@@ -149,7 +149,7 @@ fun FiltersScreen(
                         .padding(horizontal = 10.dp),
                     singleLine = true,
                     shape = RoundedCornerShape(14.dp),
-                    placeholder = { Text(text = "0.0₽", style = ralewaySubregular) },
+                    placeholder = { Text(text = "0.0" + "₽", style = ralewaySubregular) },
                     value = minPrice,
                     onValueChange = {
                         minPrice = it
@@ -165,7 +165,7 @@ fun FiltersScreen(
                     textStyle = ralewayRegular
                 )
 
-                Text(text = "До", style = ralewaySubregular)
+                Text(text = stringResource(R.string.price_to), style = ralewaySubregular)
                 var maxPrice by remember { mutableStateOf<String>("") }
                 OutlinedTextField(
                     modifier = Modifier
@@ -173,7 +173,7 @@ fun FiltersScreen(
                         .padding(horizontal = 10.dp),
                     singleLine = true,
                     shape = RoundedCornerShape(14.dp),
-                    placeholder = { Text(text = "1000.0₽", style = ralewaySubregular) },
+                    placeholder = { Text(text = "1000.0" + "₽", style = ralewaySubregular) },
                     value = maxPrice,
                     onValueChange = {
                         maxPrice = it

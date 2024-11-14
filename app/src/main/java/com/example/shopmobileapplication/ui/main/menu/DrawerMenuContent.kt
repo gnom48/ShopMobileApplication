@@ -41,8 +41,8 @@ import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
-import com.example.shopmobileapplication.viewmodel.UserViewModel
-import com.example.shopmobileapplication.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

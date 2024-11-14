@@ -4,7 +4,7 @@ package com.example.shopmobileapplication.data.favorite
 import com.example.shopmobileapplication.data.Favorite
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.User
-import com.example.shopmobileapplication.viewmodel.BaseRepository
+import com.example.shopmobileapplication.ui.viewmodel.BaseRepository
 
 interface FavoriteRepository: BaseRepository {
     suspend fun getProductsInFavorite(user: User): Result<List<Product>>

@@ -48,14 +48,14 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Order
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
-import com.example.shopmobileapplication.ui.main.composable.OrderPrice
+import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.components.OrderPrice
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubregular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.BucketViewModel
-import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable

@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.utils.SearchException
 import com.example.shopmobileapplication.utils.SharedPreferecesHelper
-import com.example.shopmobileapplication.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email

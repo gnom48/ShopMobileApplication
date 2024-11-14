@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +49,8 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.user.UserRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
 import com.example.shopmobileapplication.ui.Layouts
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewayOnButton
@@ -57,8 +58,9 @@ import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubregular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
-import com.example.shopmobileapplication.viewmodel.UserViewModel
-import com.example.shopmobileapplication.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.utils.SharedPreferecesHelper
 
 @Preview
 @Composable
@@ -289,12 +291,25 @@ fun SignUp(
         }
     }
 
-    userViewModel.user?.let {
-        navController?.navigate(Layouts.MAIN_LAYOUT) {
-            popUpTo(Layouts.SIGN_UP_LAYOUT) {
-                inclusive = true
+    LaunchedEffect(userViewModel.user) {
+        userViewModel.user?.let { user ->
+            navController?.navigate(Layouts.MAIN_LAYOUT) {
+                popUpTo(Layouts.SIGN_UP_LAYOUT) {
+                    inclusive = true
+                }
+                launchSingleTop = true
             }
-            launchSingleTop = true
+            SharedPreferecesHelper(context).saveStringData(SharedPreferecesHelper.seenOnBoardKey, user.id)
         }
     }
+
+//    userViewModel.user?.let {
+//        navController?.navigate(Layouts.MAIN_LAYOUT) {
+//            popUpTo(Layouts.SIGN_UP_LAYOUT) {
+//                inclusive = true
+//            }
+//            launchSingleTop = true
+//        }
+//    }
+
 }

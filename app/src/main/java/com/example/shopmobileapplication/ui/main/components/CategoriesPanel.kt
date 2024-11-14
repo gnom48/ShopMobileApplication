@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

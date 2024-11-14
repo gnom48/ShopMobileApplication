@@ -26,8 +26,9 @@ import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.main.search.FiltersScreen
 import com.example.shopmobileapplication.ui.theme.ShopMobileApplicationTheme
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.UserViewModel
-import com.example.shopmobileapplication.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.utils.SharedPreferecesHelper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +36,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory =
                 UserViewModelFactory(UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
-            ))
+            )
+            )
 
             val mainNavController = rememberNavController()
+            val context = LocalContext.current
 
             ShopMobileApplicationTheme {
                 NavHost(
@@ -53,8 +56,22 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(Layouts.ONBOARD_LAYOUT) {
-                        Onboard {
-                            mainNavController.navigate(Layouts.SIGN_IN_LAYOUT)
+                        if (SharedPreferecesHelper(context).getStringData(SharedPreferecesHelper.seenOnBoardKey) != null) {
+                            mainNavController.navigate(Layouts.SIGN_IN_LAYOUT) {
+                                popUpTo(Layouts.ONBOARD_LAYOUT) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        } else {
+                            Onboard {
+                                mainNavController.navigate(Layouts.SIGN_IN_LAYOUT) {
+                                    popUpTo(Layouts.ONBOARD_LAYOUT) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     }
                     composable(Layouts.SIGN_IN_LAYOUT) {

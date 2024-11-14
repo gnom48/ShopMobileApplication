@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -89,4 +90,6 @@ dependencies {
     implementation("com.github.skydoves:flexible-bottomsheet-material:0.1.5")
     implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.5")
 
+    implementation("com.google.firebase:firebase-firestore:25.1.1")
+    implementation("com.google.firebase:firebase-auth:23.1.0")
 }

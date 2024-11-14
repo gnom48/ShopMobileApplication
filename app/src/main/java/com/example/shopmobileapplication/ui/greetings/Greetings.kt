@@ -29,8 +29,8 @@ import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientEnd
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.raleway
-import com.example.shopmobileapplication.viewmodel.UserViewModel
-import com.example.shopmobileapplication.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.delay
 
 @Preview
@@ -44,7 +44,8 @@ fun Greetings(
     navController: NavController?,
     userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
         UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    ))
+    )
+    )
 ) {
     LaunchedEffect(Unit) {
         userViewModel.refreshSessionIfNeeds()

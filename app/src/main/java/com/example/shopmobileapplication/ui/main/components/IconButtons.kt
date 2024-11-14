@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
@@ -20,8 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.ui.theme.favoriteIconRed
-import com.example.shopmobileapplication.ui.theme.favoriteRed
 import com.example.shopmobileapplication.ui.theme.red
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 

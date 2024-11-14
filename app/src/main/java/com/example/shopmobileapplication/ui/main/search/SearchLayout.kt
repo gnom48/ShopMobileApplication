@@ -49,14 +49,14 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.Layouts
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.greyText
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubregular
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
 
 @Composable
 @Preview
@@ -70,7 +70,8 @@ fun SearchLayout(
     navController: NavController?,
     productViewModel: ProductViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = ProductViewModelFactory(
         ProductRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    ))
+    )
+    )
 ) {
     if (productViewModel.isLoading) {
 //        CircularProgressIndicator()

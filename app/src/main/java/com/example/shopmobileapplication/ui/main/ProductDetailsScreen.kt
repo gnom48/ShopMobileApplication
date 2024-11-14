@@ -56,10 +56,10 @@ import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
-import com.example.shopmobileapplication.ui.main.composable.BucketIconButton
-import com.example.shopmobileapplication.ui.main.composable.CategoriesHelper
-import com.example.shopmobileapplication.ui.main.composable.CustomTopAppBar
-import com.example.shopmobileapplication.ui.main.composable.SizeColorChipsRow
+import com.example.shopmobileapplication.ui.main.components.BucketIconButton
+import com.example.shopmobileapplication.ui.main.components.CategoriesHelper
+import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
+import com.example.shopmobileapplication.ui.main.components.SizeColorChipsRow
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
 import com.example.shopmobileapplication.ui.theme.favoriteRed
@@ -69,13 +69,13 @@ import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
 import com.example.shopmobileapplication.ui.theme.unableBlue
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.BucketViewModel
-import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModel
-import com.example.shopmobileapplication.viewmodel.FavoriteViewModelFactory
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
-import com.example.shopmobileapplication.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
+import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 object ProductDetailsHelper {

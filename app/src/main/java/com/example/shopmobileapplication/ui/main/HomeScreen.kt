@@ -44,12 +44,12 @@ import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.Layouts
-import com.example.shopmobileapplication.ui.main.composable.BucketIconButton
-import com.example.shopmobileapplication.ui.main.composable.CategoriesPanel
-import com.example.shopmobileapplication.ui.main.composable.CustomAlertDialog
-import com.example.shopmobileapplication.ui.main.composable.CustomLazyVerticalGrid
-import com.example.shopmobileapplication.ui.main.composable.DriverMenuIconButton
-import com.example.shopmobileapplication.ui.main.composable.ModalBottomSheetProductSizes
+import com.example.shopmobileapplication.ui.main.components.BucketIconButton
+import com.example.shopmobileapplication.ui.main.components.CategoriesPanel
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
+import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGrid
+import com.example.shopmobileapplication.ui.main.components.DriverMenuIconButton
+import com.example.shopmobileapplication.ui.main.components.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.main.menu.DrawerMenuContent
 import com.example.shopmobileapplication.ui.main.search.SearchLayout
@@ -58,8 +58,8 @@ import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
 import kotlinx.coroutines.launch
 
 @Preview
@@ -75,7 +75,8 @@ fun HomeScreen(
     bottomNavController: NavController?,
     productViewModel: ProductViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = ProductViewModelFactory(
         ProductRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    ))
+    )
+    )
 ) {
     LaunchedEffect(Unit) {
         productViewModel.getProductsCategories()

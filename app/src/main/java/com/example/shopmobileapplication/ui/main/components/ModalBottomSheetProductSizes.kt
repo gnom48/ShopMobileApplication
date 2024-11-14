@@ -1,4 +1,4 @@
-package com.example.shopmobileapplication.ui.main.composable
+package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,11 +37,11 @@ import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.product.ProductRepositoryImpl
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewayOnButton
-import com.example.shopmobileapplication.viewmodel.BucketViewModel
-import com.example.shopmobileapplication.viewmodel.BucketViewModelFactory
-import com.example.shopmobileapplication.viewmodel.ProductViewModel
-import com.example.shopmobileapplication.viewmodel.ProductViewModelFactory
-import com.example.shopmobileapplication.viewmodel.UserViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
+import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
+import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
