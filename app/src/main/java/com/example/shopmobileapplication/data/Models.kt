@@ -16,6 +16,8 @@ data class User(
     companion object {
         const val tableName = "users"
     }
+
+    constructor() : this("", "", null)
 }
 
 @Serializable
@@ -31,6 +33,8 @@ data class Product(
     companion object {
         const val tableName = "products"
     }
+
+    constructor() : this("", "", 0, "", 0.0, null, 0)
 }
 
 @Serializable
@@ -42,6 +46,8 @@ data class Bucket(
     companion object {
         const val tableName = "buckets"
     }
+
+    constructor() : this("", 0, 0)
 }
 
 @Serializable
@@ -52,6 +58,8 @@ data class Favorite(
     companion object {
         const val tableName = "favorites"
     }
+
+    constructor() : this("", "")
 }
 
 @Serializable
@@ -63,6 +71,8 @@ data class Seller(
     companion object {
         const val tableName = "sellers"
     }
+
+    constructor() : this(0, "", null)
 }
 
 @Serializable
@@ -73,6 +83,8 @@ data class ProductCategory(
     companion object {
         const val tableName = "categories"
     }
+
+    constructor() : this(0, "")
 }
 
 @Serializable
@@ -85,6 +97,8 @@ data class Store(
     companion object {
         const val tableName = "stores"
     }
+
+    constructor() : this("", "", "", 0)
 }
 
 @Serializable
@@ -98,6 +112,8 @@ data class Order(
     companion object {
         const val tableName = "orders"
     }
+
+    constructor() : this("", "", 0, 0, "")
 }
 
 @Serializable
@@ -113,4 +129,6 @@ data class ProductSize(
     companion object {
         const val tableName = "products_sizes"
     }
+
+    constructor() : this(0, "", 0, 0.0, "", null, 0)
 }

@@ -12,8 +12,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.data.user.UserRepositoryImpl
+import com.example.shopmobileapplication.data.network.FirebaseClient
+import com.example.shopmobileapplication.data.user.FirebaseUserRepositoryImpl
 import com.example.shopmobileapplication.ui.auth.SignIn
 import com.example.shopmobileapplication.ui.auth.SignUp
 import com.example.shopmobileapplication.ui.greetings.Greetings
@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory =
-                UserViewModelFactory(UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
+                UserViewModelFactory(FirebaseUserRepositoryImpl(LocalContext.current, FirebaseClient)
+//                UserViewModelFactory(UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
             )
             )
 

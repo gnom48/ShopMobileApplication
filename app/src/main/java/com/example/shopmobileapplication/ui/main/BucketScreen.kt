@@ -45,7 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.ImageStorage
+import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.data.Order
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "614648616730",
+    "project_id": "matule-me-firebase",
+    "storage_bucket": "matule-me-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614648616730:android:80679ee560f11156b03ea3",
+        "android_client_info": {
+          "package_name": "com.example.shopmobileapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnmJmSmVl0B5rhdaXyGBxUzp9ayJIkGDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

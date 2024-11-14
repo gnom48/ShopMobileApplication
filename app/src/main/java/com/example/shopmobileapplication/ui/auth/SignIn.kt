@@ -45,8 +45,8 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.network.SupabaseClient
-import com.example.shopmobileapplication.data.user.UserRepositoryImpl
+import com.example.shopmobileapplication.data.network.FirebaseClient
+import com.example.shopmobileapplication.data.user.FirebaseUserRepositoryImpl
 import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
@@ -70,7 +70,8 @@ fun SignInPreview() {
 fun SignIn(
     navController: NavController?,
     userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
-        UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        FirebaseUserRepositoryImpl(LocalContext.current, FirebaseClient)
+//        UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )
     )
 ) {

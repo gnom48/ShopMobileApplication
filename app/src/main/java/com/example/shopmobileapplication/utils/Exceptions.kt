@@ -7,6 +7,7 @@ sealed class NumericException(msg: String): Exception(msg) {
 
 sealed class AuthException(msg: String): Exception(msg) {
     data object NoSuchUserException: AuthException("No such user")
+    data object NoCurrentUserException: AuthException("No current user")
     data object IncorrectLoginOrPasswordException: AuthException("Incorrect login or password")
 }
 
