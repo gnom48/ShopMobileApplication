@@ -2,9 +2,9 @@ package com.example.shopmobileapplication.data.user
 
 import android.content.Context
 import com.example.shopmobileapplication.data.User
+import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.utils.SearchException
 import com.example.shopmobileapplication.utils.SharedPreferecesHelper
-import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -24,7 +24,7 @@ class UserRepositoryImpl(
         }
 
         private suspend fun getUserById(userId: String, supabaseClient: SupabaseClient): User? = try {
-            supabaseClient.postgrest["users"].select(filter = {
+            supabaseClient.postgrest[User.tableName].select(filter = {
                 User::id eq userId
             }).decodeSingle<User>()
         } catch (e: Exception) {
@@ -62,6 +62,12 @@ class UserRepositoryImpl(
         Result.failure(e)
     }
 
+    override suspend fun getCurrentUserInfo(): Result<UserInfo> = try {
+        Result.success(supabaseClient.gotrue.currentUserOrNull()!!)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
     private suspend fun getUserByUserInfo(userInfo: UserInfo?): User? = try {
         val user = userInfo?.let { getUserById(it.id, supabaseClient) }
         user ?: throw SearchException.NotFoundException
@@ -77,12 +83,13 @@ class UserRepositoryImpl(
         getNewTokenAndSave()
 
         val user = User(
-            id = getCurrentUserSelf(supabaseClient)!!.id,
+            id = supabaseClient.gotrue.currentUserOrNull()!!.id,
             name = userName,
-            image = null
+            image = null,
+            phone = null
         )
 
-        supabaseClient.postgrest["users"].insert(user, true)
+        supabaseClient.postgrest[User.tableName].insert(user, true)
 
         val sharedPreferencesHelper = SharedPreferecesHelper(context)
         sharedPreferencesHelper.saveStringData(SharedPreferecesHelper.lastEmailKey, userEmail)

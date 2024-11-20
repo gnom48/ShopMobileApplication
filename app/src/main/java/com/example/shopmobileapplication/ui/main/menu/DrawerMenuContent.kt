@@ -134,7 +134,7 @@ fun DrawerMenuContent(
                                     }
                                     userViewModel.signOut()
                                     navController!!.navigate(Layouts.SIGN_IN_LAYOUT) {
-                                        popUpTo(Layouts.SIGN_IN_LAYOUT) {
+                                        popUpTo(Layouts.MAIN_LAYOUT) {
                                             inclusive = true
                                         }
                                         launchSingleTop = true

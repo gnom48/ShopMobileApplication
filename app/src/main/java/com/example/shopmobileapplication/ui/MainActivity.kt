@@ -18,11 +18,15 @@ import com.example.shopmobileapplication.ui.auth.SignIn
 import com.example.shopmobileapplication.ui.auth.SignUp
 import com.example.shopmobileapplication.ui.greetings.Greetings
 import com.example.shopmobileapplication.ui.greetings.Onboard
+import com.example.shopmobileapplication.ui.main.AllOrdersScreen
 import com.example.shopmobileapplication.ui.main.BucketScreen
 import com.example.shopmobileapplication.ui.main.CategoriesLayout
 import com.example.shopmobileapplication.ui.main.Main
+import com.example.shopmobileapplication.ui.main.OrderDetailsScreen
 import com.example.shopmobileapplication.ui.main.ProductDetailsScreen
+import com.example.shopmobileapplication.ui.main.components.PdfViewer
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
+import com.example.shopmobileapplication.ui.main.menu.DrawerMenuItem
 import com.example.shopmobileapplication.ui.main.search.FiltersScreen
 import com.example.shopmobileapplication.ui.theme.ShopMobileApplicationTheme
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
@@ -110,8 +114,21 @@ class MainActivity : ComponentActivity() {
                             ProductDetailsScreen(productId = productId, navController = mainNavController)
                         }
                     }
+                    composable(DrawerMenuItem.OrdersScreen.route) {
+                        AllOrdersScreen(navController = mainNavController)
+                    }
+                    composable(Layouts.ORDER_DETAILS_SCREEN + "/{orderId}/PRODUCT/{productExampleId}") { backStackEntry ->
+                        val orderId = backStackEntry.arguments?.getString("orderId")
+                        val productExampleId = try { backStackEntry.arguments?.getString("productExampleId")!!.toInt() } catch (e: Exception) { null }
+                        if (orderId != null && productExampleId != null) {
+                            OrderDetailsScreen(orderId = orderId, productSizeId = productExampleId, navController = mainNavController)
+                        }
+                    }
                     composable(Layouts.FILTERS_SCREEN) {
                         FiltersScreen(navController = mainNavController)
+                    }
+                    composable(Layouts.POLITICS_VIEWER) {
+                        PdfViewer("policits.pdf")
                     }
                 }
             }

@@ -87,7 +87,7 @@ class ProductRepositoryImpl(
                 }
                 filter.stores?.let { stores ->
                     Product::id contained supabaseClient.postgrest[ProductSize.tableName].select(filter = {
-                        ProductSize::storeId contained stores
+                        ProductSize::stockId contained stores
                     }).decodeList<ProductSize>().map { it.productId }
                 }
             }

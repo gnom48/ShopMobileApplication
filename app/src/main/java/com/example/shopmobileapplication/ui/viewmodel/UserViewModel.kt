@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.data.user.UserRepository
 import com.example.shopmobileapplication.utils.AuthException
+import io.github.jan.supabase.gotrue.user.UserInfo
 import kotlinx.coroutines.launch
 
 class UserViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {
@@ -25,6 +26,9 @@ class UserViewModel(
 ) : BaseViewModel() {
     private val _user = mutableStateOf<User?>(null)
     val user by _user
+
+    private val _userInfo = mutableStateOf<UserInfo?>(null)
+    val userInfo by _userInfo
 
     fun getLocalToken() {
         viewModelScope.launch {
@@ -58,6 +62,12 @@ class UserViewModel(
                     _user.value = user
                     _error.value = null
                     currentUser = user
+                    userRepository.getCurrentUserInfo().onSuccess {
+                        _userInfo.value = it
+                    }.onFailure { e ->
+                        _userInfo.value = null
+                        _error.value = e
+                    }
                 }.onFailure { e ->
                     _user.value = null
                     _error.value = e

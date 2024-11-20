@@ -2,8 +2,10 @@ package com.example.shopmobileapplication.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
@@ -77,12 +81,14 @@ fun SignUp(
     )
 ) {
     val context = LocalContext.current
+    var politicsConfirmed by remember { mutableStateOf(false) }
+    var needConfirmPolitics by remember { mutableStateOf(false) }
 
     userViewModel.error?.let {
         CustomAlertDialog(
             imageResId = R.drawable.message_icon,
             title = stringResource(R.string.error),
-            message = stringResource(R.string.try_enter_again),
+            message = userViewModel.error?.message ?: "Ошибка взаимодействия с сервером",
             onDismiss = {
                 userViewModel.dismissError()
             },
@@ -239,15 +245,29 @@ fun SignUp(
             textStyle = ralewayRegular
         )
 
-        Text(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(30.dp, 10.dp),
-            text = stringResource(R.string.agreement),
-            style = ralewaySubregular,
-            textAlign = TextAlign.Left,
-            textDecoration = TextDecoration.Underline
-        )
+                .padding(30.dp, 10.dp)
+        ) {
+            Checkbox(
+                checked = politicsConfirmed,
+                onCheckedChange = { politicsConfirmed = it },
+                colors = CheckboxDefaults.colors(checkedColor = blueGradientStart, uncheckedColor = if (needConfirmPolitics) Color.Red else Color.LightGray)
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp)
+                    .clickable {
+                        navController?.navigate(Layouts.POLITICS_VIEWER)
+                    },
+                text = stringResource(R.string.agreement),
+                style = ralewaySubregular,
+                textAlign = TextAlign.Left,
+                textDecoration = TextDecoration.Underline
+            )
+        }
 
         Button(
             modifier = Modifier
@@ -258,7 +278,11 @@ fun SignUp(
             contentPadding = PaddingValues(10.dp, 10.dp),
             colors = ButtonDefaults.buttonColors(blueGradientStart),
             onClick = {
-                userViewModel.signUp(userName, userEmail, userPassword)
+                if (politicsConfirmed) {
+                    userViewModel.signUp(userName, userEmail, userPassword)
+                } else {
+                    needConfirmPolitics = true
+                }
             }
         ) {
             Text(
@@ -302,14 +326,4 @@ fun SignUp(
             SharedPreferecesHelper(context).saveStringData(SharedPreferecesHelper.seenOnBoardKey, user.id)
         }
     }
-
-//    userViewModel.user?.let {
-//        navController?.navigate(Layouts.MAIN_LAYOUT) {
-//            popUpTo(Layouts.SIGN_UP_LAYOUT) {
-//                inclusive = true
-//            }
-//            launchSingleTop = true
-//        }
-//    }
-
 }

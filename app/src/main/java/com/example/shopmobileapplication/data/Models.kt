@@ -3,15 +3,14 @@ package com.example.shopmobileapplication.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-abstract class BaseModel {
-
-}
+abstract class BaseModel { }
 
 @Serializable
 data class User(
     @SerialName("id") var id: String,
     @SerialName("name") var name: String,
-    @SerialName("image") var image: String?
+    @SerialName("image") var image: String?,
+    @SerialName("phone") var phone: String?
 ) : BaseModel() {
     companion object {
         const val tableName = "users"
@@ -77,13 +76,27 @@ data class ProductCategory(
 
 @Serializable
 data class Store(
-    @SerialName("id") var id: String,
+    @SerialName("id") var id: Int,
     @SerialName("name") var name: String,
     @SerialName("address") var address: String,
-    @SerialName("seller_id") var sellerId: Int
+    @SerialName("lat") var lat: Double,
+    @SerialName("lon") var lon: Double
 ) : BaseModel() {
     companion object {
         const val tableName = "stores"
+    }
+}
+
+@Serializable
+data class Stock(
+    @SerialName("id") var id: Int,
+    @SerialName("name") var name: String,
+    @SerialName("address") var address: String,
+    @SerialName("lat") var lat: Double,
+    @SerialName("lon") var lon: Double
+) : BaseModel() {
+    companion object {
+        const val tableName = "stocks"
     }
 }
 
@@ -93,10 +106,26 @@ data class Order(
     @SerialName("user_id") var userId: String,
     @SerialName("product_example_id") var productExampleId: Int,
     @SerialName("quantity") var quantity: Int,
-    @SerialName("order_date") var orderDate: String
+    @SerialName("order_date_time") var orderDateTime: Long,
+    @SerialName("store_id") var storeId: Int
 ) : BaseModel() {
     companion object {
         const val tableName = "orders"
+    }
+}
+
+
+@Serializable
+data class OrderStatus(
+    @SerialName("id") var id: String,
+    @SerialName("name") var name: String
+) : BaseModel() {
+    companion object {
+        const val tableName = "order_status"
+
+        const val ORDER_CONFIRMED = "Заказ оформлен"
+        const val ORDER_DELIVERED = "Заказ доставлен"
+        const val ORDER_TAKEN = "Заказ получен"
     }
 }
 
@@ -108,9 +137,29 @@ data class ProductSize(
     @SerialName("size_rus") var sizeRus: Double,
     @SerialName("color") var color: String,
     @SerialName("image") var image: String?,
-    @SerialName("store_id") var storeId: Int
+    @SerialName("stock_id") var stockId: Int
 ) : BaseModel() {
     companion object {
         const val tableName = "products_sizes"
+    }
+}
+
+@Serializable
+data class OrderDetailsView(
+    @SerialName("order_id") val orderId: String,
+    @SerialName("user_id") val userId: String,
+    @SerialName("quantity_in_order") val quantityInOrder: Int,
+    @SerialName("product_example_id") val productExampleId: Int,
+    @SerialName("product_id") val productId: String,
+    @SerialName("order_date_time") val orderDateTime: Long,
+    @SerialName("name") val name: String,
+    @SerialName("price") val price: Double,
+    @SerialName("image") val image: String,
+    @SerialName("size_rus") val sizeRus: Double,
+    @SerialName("color") val color: String,
+    @SerialName("status") val status: String
+) {
+    companion object {
+        const val viewName = "order_details_view"
     }
 }

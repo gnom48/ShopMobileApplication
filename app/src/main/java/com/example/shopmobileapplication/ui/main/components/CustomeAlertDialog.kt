@@ -1,9 +1,16 @@
 package com.example.shopmobileapplication.ui.main.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,9 +34,10 @@ fun CustomAlertDialogPreview() {
 
 @Composable
 fun CustomAlertDialog(
-    imageResId: Int,
-    title: String,
-    message: String,
+    imageResId: Int = R.drawable.message_icon,
+    title: String = "Внимание!",
+    message: String = "Произошла ошибка загрузки данных. Повторите попытку позже.",
+    buttonText: String = "OK",
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -49,7 +57,7 @@ fun CustomAlertDialog(
                     painter = painterResource(id = imageResId),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(44.dp, 44.dp)
+                        .size(64.dp, 64.dp)
                         .padding(bottom = 16.dp)
                 )
 
@@ -80,7 +88,7 @@ fun CustomAlertDialog(
                 ) {
                     androidx.compose.material3.Text(
                         modifier = Modifier.padding(vertical = 5.dp),
-                        text = "Ок",
+                        text = buttonText,
                         style = ralewayOnButton
                     )
                 }

@@ -45,10 +45,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.data.Order
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
+import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.components.OrderPrice
@@ -68,7 +68,7 @@ import com.skydoves.flexible.core.FlexibleSheetValue
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.UUID
+import java.time.ZoneOffset
 
 @Composable
 @Preview
@@ -141,11 +141,12 @@ fun BucketScreen(
                         bucketViewModel.productsSizesInBucket.find { it.id == b.productExampleId }?.let {
                             orderList.add(
                                 Order(
-                                    id = UUID.randomUUID().toString(),
+                                    id = "",
                                     userId = UserViewModel.currentUser.id,
                                     productExampleId = it.id,
                                     quantity = b.quantity,
-                                    orderDate = LocalDateTime.now().toString()
+                                    orderDateTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                                    storeId = 1
                                 )
                             )
                         }
@@ -157,9 +158,7 @@ fun BucketScreen(
                     OrderPrice(bucketViewModel.bucketSum, 0.0) {
                         coroutineScope.launch {
                             when (sheetState.swipeableState.currentValue) {
-                                FlexibleSheetValue.FullyExpanded -> {
-                                    // TODO: confirm
-                                }
+                                FlexibleSheetValue.FullyExpanded -> { }
                                 FlexibleSheetValue.SlightlyExpanded -> sheetState.fullyExpand()
                                 else -> { }
                             }

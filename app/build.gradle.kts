@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,6 +48,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    sourceSets {
+        getByName("main") {
+            assets {
+                srcDirs("src\\main\\assets", "src\\main\\assets")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -71,9 +77,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:1.3.2")
-    implementation("io.github.jan-tennert.supabase:storage-kt:1.3.2")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:1.3.2")
+    val supabaseVersion = "1.3.2"
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:$supabaseVersion")
+    implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabaseVersion")
+
     implementation("io.ktor:ktor-client-cio:2.3.4")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
@@ -90,6 +98,6 @@ dependencies {
     implementation("com.github.skydoves:flexible-bottomsheet-material:0.1.5")
     implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.5")
 
-    implementation("com.google.firebase:firebase-firestore:25.1.1")
-    implementation("com.google.firebase:firebase-auth:23.1.0")
+    val zxingVersion = "3.5.2"
+    implementation("com.google.zxing:core:$zxingVersion")
 }

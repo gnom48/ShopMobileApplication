@@ -2,6 +2,7 @@ package com.example.shopmobileapplication.data.user
 
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.ui.viewmodel.BaseRepository
+import io.github.jan.supabase.gotrue.user.UserInfo
 
 interface UserRepository: BaseRepository {
     suspend fun getLocalToken(): String?
@@ -17,4 +18,5 @@ interface UserRepository: BaseRepository {
     suspend fun refreshSessionIfNeeds(): Boolean
 
     suspend fun signOut(): Boolean
+    suspend fun getCurrentUserInfo(): Result<UserInfo>
 }

@@ -51,4 +51,19 @@
     <string name="error_maybe_incorrect">Возможно были введены некорректные значения!</string>
     <string name="price_from">От</string>
     <string name="price_to">До</string>
+    <string name="order_succes">Вы успешно оформили заказ</string>
+    <string name="back_to_shopping">Вернуться к покупкам</string>
+    <string name="pay_in_office">Оплата при получении</string>
+    <string name="bucker_is_empty">Корзина пуста!</string>
+    <string name="please_enter_phone">Укажите номер</string>
+    <string name="phone">Телефон</string>
+    <string name="address">Адрес</string>
+    <string name="payment_method">Способ оплаты</string>
+    <string name="enter_email">Введите почту</string>
+    <string name="orders">Заказы</string>
+    <string name="today">Сегодня</string>
+    <string name="contact_info">Контактная информация</string>
+    <string name="status_not_fuzzy">Статус не определен</string>
+    <string name="previous">Предыдущая</string>
+    <string name="nexts">Следующие</string>
 </resources>
