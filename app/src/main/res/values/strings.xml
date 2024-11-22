@@ -66,4 +66,6 @@
     <string name="status_not_fuzzy">Статус не определен</string>
     <string name="previous">Предыдущая</string>
     <string name="nexts">Следующие</string>
+    <string name="as_gueat">Войти как гость</string>
+    <string name="or">Или</string>
 </resources>

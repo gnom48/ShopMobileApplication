@@ -6,17 +6,12 @@ import io.github.jan.supabase.gotrue.user.UserInfo
 
 interface UserRepository: BaseRepository {
     suspend fun getLocalToken(): String?
-
     suspend fun getNewTokenAndSave(): String?
-
     suspend fun getCurrentUser(): Result<User>
-
     suspend fun signUp(userName: String, userEmail: String, userPassword: String): Result<User>
-
     suspend fun signIn(userEmail: String, userPassword: String): Result<User>
-
+    suspend fun anonSignIn(): Result<User>
     suspend fun refreshSessionIfNeeds(): Boolean
-
     suspend fun signOut(): Boolean
     suspend fun getCurrentUserInfo(): Result<UserInfo>
 }

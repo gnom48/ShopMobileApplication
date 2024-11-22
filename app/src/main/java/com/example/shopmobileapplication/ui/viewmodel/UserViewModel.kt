@@ -106,6 +106,21 @@ class UserViewModel(
         }
     }
 
+    fun anonSignIn() {
+        viewModelScope.launch {
+            withLoading {
+                userRepository.anonSignIn().onSuccess { user ->
+                    _user.value = user
+                    currentUser = user
+                    _error.value = null
+                }.onFailure { e ->
+                    _user.value = null
+                    _error.value = e
+                }
+            }
+        }
+    }
+
     fun refreshSessionIfNeeds() {
         viewModelScope.launch {
             withLoading {

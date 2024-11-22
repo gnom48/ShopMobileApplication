@@ -26,12 +26,15 @@ import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
+import com.example.shopmobileapplication.data.favorite.LocalFavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
+import com.example.shopmobileapplication.data.user.UserRepositoryImpl
 import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
 import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
 import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModelFactory
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.utils.SharedPreferecesHelper
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +64,11 @@ fun CustomLazyVerticalGrid(
     )
     ),
     favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
-        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        if (UserViewModel.currentUser == UserRepositoryImpl.GUEST) LocalFavoriteRepositoryImpl(
+            SharedPreferecesHelper(LocalContext.current)
+        )
+        else FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+    //        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )
     )
 ) {

@@ -21,7 +21,9 @@ import androidx.navigation.NavController
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.favorite.FavoriteRepositoryImpl
+import com.example.shopmobileapplication.data.favorite.LocalFavoriteRepositoryImpl
 import com.example.shopmobileapplication.data.network.SupabaseClient
+import com.example.shopmobileapplication.data.user.UserRepositoryImpl
 import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
@@ -33,6 +35,7 @@ import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
 import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModelFactory
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
+import com.example.shopmobileapplication.utils.SharedPreferecesHelper
 
 @Preview
 @Composable
@@ -44,9 +47,14 @@ private fun FavoritesScreenPreview() {
 fun FavoritesScreen(
     navController: NavController?,
     favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
-        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        if (UserViewModel.currentUser == UserRepositoryImpl.GUEST) LocalFavoriteRepositoryImpl(SharedPreferecesHelper(LocalContext.current))
+        else FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )
     )
+//    favoriteViewModel: FavoriteViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = FavoriteViewModelFactory(
+//        FavoriteRepositoryImpl(LocalContext.current, SupabaseClient.client)
+//    )
+//    )
 ) {
     LaunchedEffect(Unit) {
         favoriteViewModel.getProductsInFavorite(UserViewModel.currentUser)

@@ -10,12 +10,21 @@ import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.gotrue.user.UserInfo
 import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 
 class UserRepositoryImpl(
     private val context: Context,
     private val supabaseClient: SupabaseClient
 ): UserRepository {
     companion object {
+        final val GUEST = User(
+            id = "0",
+            name = "Гость",
+            image = null,
+            phone = null
+        )
+
         private suspend fun getCurrentUserSelf(supabaseClient: SupabaseClient): User? = try {
             val userInfo = supabaseClient.gotrue.currentUserOrNull()
             getUserById(userInfo!!.id, supabaseClient)
@@ -121,6 +130,20 @@ class UserRepositoryImpl(
         Result.failure(e)
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
+    override suspend fun anonSignIn(): Result<User> = try {
+        supabaseClient.gotrue.signUpWith(Email) {
+            email = ""
+            password = ""
+        }
+        getNewTokenAndSave()
+        Result.success(GUEST)
+    } catch (e: MissingFieldException) {
+        Result.success(GUEST)
+    }catch (e: Exception) {
+        Result.failure(e)
+    }
+
     override suspend fun refreshSessionIfNeeds(): Boolean = try {
         val token = getLocalToken()
         if (token.isNullOrBlank()) {
@@ -138,9 +161,8 @@ class UserRepositoryImpl(
 
     override suspend fun signOut(): Boolean = try {
         supabaseClient.gotrue.logout()
-        val sharedPreferences = SharedPreferecesHelper(context)
-        sharedPreferences.deleteStringData(SharedPreferecesHelper.accessTokenKey)
-
+        // TODO: возможно как-то удалять UserInfo
+        SharedPreferecesHelper(context).deleteStringData(SharedPreferecesHelper.accessTokenKey)
         true
     } catch (e: Exception) {
         false

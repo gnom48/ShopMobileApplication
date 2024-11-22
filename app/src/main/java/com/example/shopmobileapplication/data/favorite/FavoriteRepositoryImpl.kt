@@ -13,13 +13,12 @@ class FavoriteRepositoryImpl(
     private val supabaseClient: SupabaseClient
 ): FavoriteRepository {
     override suspend fun getProductsInFavorite(user: User): Result<List<Product>> = try {
-        val favorites = supabaseClient.postgrest["favorites"].select(filter = {
+        val favorites = supabaseClient.postgrest[Favorite.tableName].select(filter = {
             Favorite::userId eq user.id
         }).decodeList<Favorite>()
         val products = mutableListOf<Product>()
         favorites.forEach { fav ->
-            ProductRepositoryImpl.getOneProductById(fav.productId, supabaseClient)
-                ?.let { products.add(it) }
+            ProductRepositoryImpl.getOneProductById(fav.productId, supabaseClient)?.let { products.add(it) }
         }
         Result.success(products.toList())
     } catch (e: Exception) {
@@ -27,7 +26,7 @@ class FavoriteRepositoryImpl(
     }
 
     override suspend fun getFavoriteList(user: User): Result<List<Favorite>> = try {
-        val favorites = supabaseClient.postgrest["favorites"].select(filter = {
+        val favorites = supabaseClient.postgrest[Favorite.tableName].select(filter = {
             Favorite::userId eq user.id
         }).decodeList<Favorite>()
         Result.success(favorites)
@@ -36,14 +35,14 @@ class FavoriteRepositoryImpl(
     }
 
     override suspend fun addProductToFavorite(favorite: Favorite): Result<Boolean> = try {
-        supabaseClient.postgrest["favorites"].insert(favorite)
+        supabaseClient.postgrest[Favorite.tableName].insert(favorite)
         Result.success(true)
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun deleteFavorite(favorite: Favorite): Result<Boolean> = try {
-        supabaseClient.postgrest["favorites"].delete(filter = {
+        supabaseClient.postgrest[Favorite.tableName].delete(filter = {
             and {
                 Favorite::productId eq favorite.productId
                 Favorite::userId eq favorite.userId

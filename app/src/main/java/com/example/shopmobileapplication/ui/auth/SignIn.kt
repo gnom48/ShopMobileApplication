@@ -274,8 +274,35 @@ fun SignIn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Bottom)
-                    .padding(20.dp),
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 text = stringResource(R.string.go_to_sign_up),
+                style = ralewayRegular,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp),
+            text = stringResource(R.string.or),
+            style = ralewayRegular,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
+
+        TextButton(
+            onClick = {
+                userViewModel.anonSignIn()
+            }
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Bottom)
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                text = stringResource(R.string.as_gueat),
                 style = ralewayRegular,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
