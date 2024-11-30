@@ -6,9 +6,9 @@ import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.utils.SearchException
 import com.example.shopmobileapplication.utils.SharedPreferecesHelper
 import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.gotrue.gotrue
-import io.github.jan.supabase.gotrue.providers.builtin.Email
-import io.github.jan.supabase.gotrue.user.UserInfo
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
@@ -27,16 +27,18 @@ class UserRepositoryImpl(
         )
 
         private suspend fun getCurrentUserSelf(supabaseClient: SupabaseClient): User? = try {
-            val userInfo = supabaseClient.gotrue.currentUserOrNull()
+            val userInfo = supabaseClient.auth.currentUserOrNull()
             getUserById(userInfo!!.id, supabaseClient)
         } catch (e: Exception) {
             null
         }
 
         private suspend fun getUserById(userId: String, supabaseClient: SupabaseClient): User? = try {
-            supabaseClient.postgrest[User.tableName].select(filter = {
-                User::id eq userId
-            }).decodeSingle<User>()
+            supabaseClient.postgrest[User.tableName].select() {
+                filter {
+                    User::id eq userId
+                }
+            }.decodeSingle<User>()
         } catch (e: Exception) {
             null
         }
@@ -50,7 +52,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getNewTokenAndSave(): String? = try {
-        val accessToken = supabaseClient.gotrue.currentAccessTokenOrNull()
+        val accessToken = supabaseClient.auth.currentAccessTokenOrNull()
 
         val sharedPreferences = SharedPreferecesHelper(context)
         sharedPreferences.saveStringData(SharedPreferecesHelper.accessTokenKey, accessToken)
@@ -61,7 +63,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getCurrentUser(): Result<User> = try {
-        val userInfo = supabaseClient.gotrue.currentUserOrNull()
+        val userInfo = supabaseClient.auth.currentUserOrNull()
         val user = userInfo?.let { getUserById(it.id, supabaseClient) }
         if (user != null) {
             Result.success(user)
@@ -73,7 +75,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getCurrentUserInfo(): Result<UserInfo> = try {
-        Result.success(supabaseClient.gotrue.currentUserOrNull()!!)
+        Result.success(supabaseClient.auth.currentUserOrNull()!!)
     } catch (e: Exception) {
         Result.failure(e)
     }
@@ -86,21 +88,21 @@ class UserRepositoryImpl(
     }
 
     override suspend fun signUp(userName: String, userEmail: String, userPassword: String): Result<User> = try {
-        supabaseClient.gotrue.signUpWith(Email) {
+        supabaseClient.auth.signUpWith(Email) {
             email = userEmail
             password = userPassword
         }
         getNewTokenAndSave()
 
         val user = User(
-            id = supabaseClient.gotrue.currentUserOrNull()!!.id,
+            id = supabaseClient.auth.currentUserOrNull()!!.id,
             name = userName,
             image = null,
             phone = null,
             address = null
         )
 
-        supabaseClient.postgrest[User.tableName].insert(user, true)
+        supabaseClient.postgrest[User.tableName].insert(user)
 
         val sharedPreferencesHelper = SharedPreferecesHelper(context)
         sharedPreferencesHelper.saveStringData(SharedPreferecesHelper.lastEmailKey, userEmail)
@@ -112,7 +114,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun signIn(userEmail: String, userPassword: String): Result<User> = try {
-        supabaseClient.gotrue.loginWith(Email) {
+        supabaseClient.auth.signInWith(Email) {
             email = userEmail
             password = userPassword
         }
@@ -134,7 +136,7 @@ class UserRepositoryImpl(
 
     @OptIn(ExperimentalSerializationApi::class)
     override suspend fun anonSignIn(): Result<User> = try {
-        supabaseClient.gotrue.signUpWith(Email) {
+        supabaseClient.auth.signUpWith(Email) {
             email = ""
             password = ""
         }
@@ -151,9 +153,9 @@ class UserRepositoryImpl(
         if (token.isNullOrBlank()) {
             false
         } else {
-            val userInfo = supabaseClient.gotrue.retrieveUser(token)
+            val userInfo = supabaseClient.auth.retrieveUser(token)
             getUserByUserInfo(userInfo)?.let { user -> UserViewModel.currentUser = user }
-            supabaseClient.gotrue.refreshCurrentSession()
+            supabaseClient.auth.refreshCurrentSession()
             getNewTokenAndSave()
             true
         }
@@ -162,7 +164,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun signOut(): Boolean = try {
-        supabaseClient.gotrue.logout()
+        supabaseClient.auth.signOut()
         // TODO: возможно как-то удалять UserInfo
         SharedPreferecesHelper(context).deleteStringData(SharedPreferecesHelper.accessTokenKey)
         true

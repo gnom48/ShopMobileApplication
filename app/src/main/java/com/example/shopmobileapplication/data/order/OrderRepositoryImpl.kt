@@ -41,16 +41,18 @@ class OrderRepositoryImpl(
 //    }
 
     override suspend fun getOrdersDetails(user: User, orderId: String?): Result<List<OrderDetailsView>> = try {
-        Result.success(supabaseClient.postgrest[OrderDetailsView.viewName].select(filter = {
-            if (orderId != null) {
-                and {
-                    OrderDetailsView::orderId eq orderId
+        Result.success(supabaseClient.postgrest[OrderDetailsView.viewName].select() {
+            filter {
+                if (orderId != null) {
+                    and {
+                        OrderDetailsView::orderId eq orderId
+                        OrderDetailsView::userId eq user.id
+                    }
+                } else {
                     OrderDetailsView::userId eq user.id
                 }
-            } else {
-                OrderDetailsView::userId eq user.id
             }
-        }).decodeList<OrderDetailsView>())
+        }.decodeList<OrderDetailsView>())
     } catch (e: Exception) {
         Result.failure(e)
     }

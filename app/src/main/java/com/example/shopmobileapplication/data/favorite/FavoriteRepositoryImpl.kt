@@ -13,9 +13,11 @@ class FavoriteRepositoryImpl(
     private val supabaseClient: SupabaseClient
 ): FavoriteRepository {
     override suspend fun getProductsInFavorite(user: User): Result<List<Product>> = try {
-        val favorites = supabaseClient.postgrest[Favorite.tableName].select(filter = {
-            Favorite::userId eq user.id
-        }).decodeList<Favorite>()
+        val favorites = supabaseClient.postgrest[Favorite.tableName].select() {
+            filter {
+                Favorite::userId eq user.id
+            }
+        }.decodeList<Favorite>()
         val products = mutableListOf<Product>()
         favorites.forEach { fav ->
             ProductRepositoryImpl.getOneProductById(fav.productId, supabaseClient)?.let { products.add(it) }
@@ -26,9 +28,11 @@ class FavoriteRepositoryImpl(
     }
 
     override suspend fun getFavoriteList(user: User): Result<List<Favorite>> = try {
-        val favorites = supabaseClient.postgrest[Favorite.tableName].select(filter = {
-            Favorite::userId eq user.id
-        }).decodeList<Favorite>()
+        val favorites = supabaseClient.postgrest[Favorite.tableName].select() {
+            filter {
+                Favorite::userId eq user.id
+            }
+        }.decodeList<Favorite>()
         Result.success(favorites)
     } catch (e: Exception) {
         Result.failure(e)
@@ -42,12 +46,14 @@ class FavoriteRepositoryImpl(
     }
 
     override suspend fun deleteFavorite(favorite: Favorite): Result<Boolean> = try {
-        supabaseClient.postgrest[Favorite.tableName].delete(filter = {
-            and {
-                Favorite::productId eq favorite.productId
-                Favorite::userId eq favorite.userId
+        supabaseClient.postgrest[Favorite.tableName].delete {
+            filter {
+                and {
+                    Favorite::productId eq favorite.productId
+                    Favorite::userId eq favorite.userId
+                }
             }
-        })
+        }
         Result.success(true)
     } catch (e: Exception) {
         Result.failure(e)

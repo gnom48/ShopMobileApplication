@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
+//    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -40,9 +41,9 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.1"
+//    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -77,10 +78,16 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    val supabaseVersion = "1.3.2"
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:$supabaseVersion")
-    implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabaseVersion")
+    val supabaseVersion = "3.0.2"
+//    implementation("io.github.jan-tennert.supabase:gotrue-kt:$supabaseVersion")
+//    implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
+//    implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabaseVersion")
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:$supabaseVersion"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+
 
     implementation("io.ktor:ktor-client-cio:2.3.4")
 
@@ -100,4 +107,6 @@ dependencies {
 
     val zxingVersion = "3.5.2"
     implementation("com.google.zxing:core:$zxingVersion")
+
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }

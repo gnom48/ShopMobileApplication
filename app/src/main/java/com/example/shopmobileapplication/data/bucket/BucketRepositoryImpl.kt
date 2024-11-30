@@ -15,21 +15,25 @@ class BucketRepositoryImpl(
     private val supabaseClient: SupabaseClient
 ): BucketRepository {
     override suspend fun getBucketList(user: User): Result<List<Bucket>> = try {
-        val buckets = supabaseClient.postgrest[Bucket.tableName].select(filter = {
-            Bucket::userId eq user.id
-        }).decodeList<Bucket>()
+        val buckets = supabaseClient.postgrest[Bucket.tableName].select() {
+            filter {
+                Bucket::userId eq user.id
+            }
+        }.decodeList<Bucket>()
         Result.success(buckets)
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun getOneBucket(user: User, product: Product): Result<Bucket> = try {
-        val bucket = supabaseClient.postgrest[Bucket.tableName].select(filter = {
-            and {
-                Bucket::userId eq user.id
-                Bucket::productExampleId eq product.id
+        val bucket = supabaseClient.postgrest[Bucket.tableName].select() {
+            filter {
+                and {
+                    Bucket::userId eq user.id
+                    Bucket::productExampleId eq product.id
+                }
             }
-        }).decodeSingle<Bucket>()
+        }.decodeSingle<Bucket>()
         Result.success(bucket)
     } catch (e: Exception) {
         Result.failure(e)
@@ -48,9 +52,11 @@ class BucketRepositoryImpl(
                 Bucket::quantity setTo bucket.quantity
             }
         ) {
-            and {
-                Bucket::userId eq bucket.userId
-                Bucket::productExampleId eq bucket.productExampleId
+            filter {
+                and {
+                    Bucket::userId eq bucket.userId
+                    Bucket::productExampleId eq bucket.productExampleId
+                }
             }
         }
         Result.success(true)
@@ -59,12 +65,14 @@ class BucketRepositoryImpl(
     }
 
     override suspend fun deleteBucket(bucket: Bucket): Result<Boolean> = try {
-        supabaseClient.postgrest[Bucket.tableName].delete(filter = {
-            and {
-                Bucket::productExampleId eq bucket.productExampleId
-                Bucket::userId eq bucket.userId
+        supabaseClient.postgrest[Bucket.tableName].delete {
+            filter {
+                and {
+                    Bucket::productExampleId eq bucket.productExampleId
+                    Bucket::userId eq bucket.userId
+                }
             }
-        })
+        }
         Result.success(true)
     } catch (e: Exception) {
         Result.failure(e)
@@ -89,9 +97,11 @@ class BucketRepositoryImpl(
     }
 
     override suspend fun getProductsInBucket(user: User): Result<List<Product>> = try {
-        val buckets = supabaseClient.postgrest[Bucket.tableName].select(filter = {
-            Bucket::userId eq user.id
-        }).decodeList<Bucket>()
+        val buckets = supabaseClient.postgrest[Bucket.tableName].select() {
+            filter {
+                Bucket::userId eq user.id
+            }
+        }.decodeList<Bucket>()
         val products = mutableListOf<Product>()
         buckets.forEach { b ->
             ProductRepositoryImpl.getOneProductById(ProductRepositoryImpl.getProductByProductSize(b.productExampleId!!, supabaseClient)!!.id, supabaseClient)
@@ -103,9 +113,11 @@ class BucketRepositoryImpl(
     }
 
     override suspend fun getProductsSizesInBucket(user: User): Result<List<ProductSize>> = try {
-        val buckets = supabaseClient.postgrest[Bucket.tableName].select(filter = {
-            Bucket::userId eq user.id
-        }).decodeList<Bucket>()
+        val buckets = supabaseClient.postgrest[Bucket.tableName].select() {
+            filter {
+                Bucket::userId eq user.id
+            }
+        }.decodeList<Bucket>()
         val products = mutableListOf<ProductSize>()
         buckets.forEach { b ->
             ProductRepositoryImpl.getOneProductSizeById(b.productExampleId!!, supabaseClient)

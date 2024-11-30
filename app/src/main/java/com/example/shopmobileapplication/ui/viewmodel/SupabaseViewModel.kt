@@ -36,7 +36,7 @@ class SupabaseViewModel: ViewModel() {
             try {
                 _dataState.value = DataState.Loading
                 val bucket = SupabaseClient.client.storage[bucketName]
-                bucket.upload("$fileName", byteArray, true)
+                bucket.upload("$fileName", byteArray) {}
                 Log.d("tmp", "Upload to bucket successfully!")
                 _dataState.value = DataState.Success("Upload to bucket successfully!")
             } catch (e: Exception) {
