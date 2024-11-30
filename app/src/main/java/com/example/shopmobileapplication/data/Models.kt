@@ -10,7 +10,8 @@ data class User(
     @SerialName("id") var id: String,
     @SerialName("name") var name: String,
     @SerialName("image") var image: String?,
-    @SerialName("phone") var phone: String?
+    @SerialName("phone") var phone: String?,
+    @SerialName("address") var address: String?
 ) : BaseModel() {
     companion object {
         const val tableName = "users"

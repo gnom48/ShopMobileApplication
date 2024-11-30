@@ -206,8 +206,8 @@ fun DeliveryContactInfo(
                         textStyle = ralewayRegular,
                         enabled = enterPhoneEnabled
                     )
-//                    Text(userViewModel.user?.phone ?: stringResource(R.string.please_enter_phone), style = ralewaySubtitle, modifier = Modifier.padding(bottom = 5.dp))
-                    Text(stringResource(R.string.phone), style = ralewaySubregular)
+                    Text(userViewModel.user?.phone ?: stringResource(R.string.phone), style = ralewaySubtitle)//, modifier = Modifier.padding(bottom = 5.dp))
+//                    Text(stringResource(R.string.phone), style = ralewaySubregular)
                 }
                 Box(
                     modifier = Modifier

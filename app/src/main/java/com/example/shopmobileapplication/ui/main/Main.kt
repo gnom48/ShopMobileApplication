@@ -72,9 +72,7 @@ fun Main(
                         }
                     }
                     composable(BottomMenuItem.ProfileScreen.route) {
-                        Box(modifier = Modifier.fillMaxSize().background(whiteGreyBackground)) {
-                            Text("profile")
-                        }
+                        ProfileScreen(mainNavController)
                     }
                 }
             }

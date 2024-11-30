@@ -68,4 +68,9 @@
     <string name="nexts">Следующие</string>
     <string name="as_gueat">Войти как гость</string>
     <string name="or">Или</string>
+    <string name="profile">Профиль</string>
+    <string name="complete">Готово</string>
+    <string name="edit_avatar">Изменить фото профиля</string>
+    <string name="discount_card">Карта лояльности</string>
+    <string name="show_full">Открыть</string>
 </resources>

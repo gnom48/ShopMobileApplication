@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopmobileapplication.R
+import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 
@@ -35,13 +36,13 @@ fun CustomTopAppBarPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopAppBar(
+    modifier: Modifier = Modifier.fillMaxWidth().background(lightGrayBackground),
     title: String,
     onBackButtonClick: () -> Unit,
     actionIconButton: @Composable () -> Unit = { Spacer(modifier = Modifier.size(42.dp)) }
 ) {
     TopAppBar(
-        modifier = Modifier
-            .fillMaxWidth().background(whiteGreyBackground),
+        modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = whiteGreyBackground),
         title = {
             Row(

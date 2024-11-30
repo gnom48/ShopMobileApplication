@@ -3,6 +3,7 @@ package com.example.shopmobileapplication.ui.main
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,7 @@ import com.example.shopmobileapplication.data.OrderStatus
 import com.example.shopmobileapplication.data.generateBarcode
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.order.OrderRepositoryImpl
+import com.example.shopmobileapplication.ui.main.components.BarCodeFullScreen
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.components.DeliveryContactInfo
 import com.example.shopmobileapplication.ui.main.components.OrderItem
@@ -70,6 +72,7 @@ fun OrderDetailsScreen(
     var orderStatus by remember { mutableStateOf<String?>(null) }
     var barcodeBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var barcodeWidth by remember { mutableIntStateOf(500) }
+    var showBarCodeFullScreen by remember { mutableStateOf(false) }
 
     LaunchedEffect(orderViewModel.orderDetails) {
         if (orderViewModel.orderDetails.isNotEmpty()) {
@@ -157,7 +160,11 @@ fun OrderDetailsScreen(
                             )
                         } else {
                             Image(
-                                modifier = Modifier.padding(10.dp),
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable {
+                                        showBarCodeFullScreen = true
+                                    },
                                 bitmap = barcodeBitmap!!.asImageBitmap(),
                                 contentDescription = "Barcode",
                             )
@@ -165,6 +172,12 @@ fun OrderDetailsScreen(
                     }
                 }
             }
+        }
+    }
+
+    if (showBarCodeFullScreen && barcodeBitmap != null) {
+        BarCodeFullScreen(barcodeBitmap = barcodeBitmap) {
+            showBarCodeFullScreen = false
         }
     }
 }

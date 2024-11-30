@@ -22,7 +22,8 @@ class UserRepositoryImpl(
             id = "0",
             name = "Гость",
             image = null,
-            phone = null
+            phone = null,
+            address = null
         )
 
         private suspend fun getCurrentUserSelf(supabaseClient: SupabaseClient): User? = try {
@@ -95,7 +96,8 @@ class UserRepositoryImpl(
             id = supabaseClient.gotrue.currentUserOrNull()!!.id,
             name = userName,
             image = null,
-            phone = null
+            phone = null,
+            address = null
         )
 
         supabaseClient.postgrest[User.tableName].insert(user, true)

@@ -10,6 +10,7 @@ import com.example.shopmobileapplication.data.user.UserRepository
 import com.example.shopmobileapplication.utils.AuthException
 import io.github.jan.supabase.gotrue.user.UserInfo
 import kotlinx.coroutines.launch
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class UserViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -29,6 +30,9 @@ class UserViewModel(
 
     private val _userInfo = mutableStateOf<UserInfo?>(null)
     val userInfo by _userInfo
+
+    private val _discountCard = mutableStateOf<JvmType.Object?>(null)
+    val discountCard by _discountCard
 
     fun getLocalToken() {
         viewModelScope.launch {
