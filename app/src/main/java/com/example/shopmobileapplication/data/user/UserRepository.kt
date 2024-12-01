@@ -14,4 +14,5 @@ interface UserRepository: BaseRepository {
     suspend fun refreshSessionIfNeeds(): Boolean
     suspend fun signOut(): Boolean
     suspend fun getCurrentUserInfo(): Result<UserInfo>
+    suspend fun updateUserInfo(newPhone: String? = null, newEmail: String? = null, newPassword: String? = null): Result<UserInfo>
 }

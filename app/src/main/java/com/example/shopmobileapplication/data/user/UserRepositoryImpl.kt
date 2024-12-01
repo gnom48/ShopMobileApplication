@@ -22,7 +22,6 @@ class UserRepositoryImpl(
             id = "0",
             name = "Гость",
             image = null,
-            phone = null,
             address = null
         )
 
@@ -78,6 +77,18 @@ class UserRepositoryImpl(
         Result.failure(e)
     }
 
+    override suspend fun updateUserInfo(newPhone: String?, newEmail: String?, newPassword: String?): Result<UserInfo> = try {
+        supabaseClient.gotrue.modifyUser {
+            newPhone?.let { phoneNumber = it }
+            newEmail?.let { email = it }
+            newPassword?.let { password = it }
+        }
+
+        Result.success(supabaseClient.gotrue.currentUserOrNull()!!)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
     private suspend fun getUserByUserInfo(userInfo: UserInfo?): User? = try {
         val user = userInfo?.let { getUserById(it.id, supabaseClient) }
         user ?: throw SearchException.NotFoundException
@@ -96,7 +107,6 @@ class UserRepositoryImpl(
             id = supabaseClient.gotrue.currentUserOrNull()!!.id,
             name = userName,
             image = null,
-            phone = null,
             address = null
         )
 

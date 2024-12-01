@@ -51,6 +51,7 @@ import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
+import io.github.jan.supabase.gotrue.gotrue
 
 @Composable
 fun DeliveryContactInfo(
@@ -206,7 +207,7 @@ fun DeliveryContactInfo(
                         textStyle = ralewayRegular,
                         enabled = enterPhoneEnabled
                     )
-                    Text(userViewModel.user?.phone ?: stringResource(R.string.phone), style = ralewaySubtitle)//, modifier = Modifier.padding(bottom = 5.dp))
+                    Text(SupabaseClient.client.gotrue.currentUserOrNull()?.phone ?: stringResource(R.string.phone), style = ralewaySubtitle)//, modifier = Modifier.padding(bottom = 5.dp))
 //                    Text(stringResource(R.string.phone), style = ralewaySubregular)
                 }
                 Box(

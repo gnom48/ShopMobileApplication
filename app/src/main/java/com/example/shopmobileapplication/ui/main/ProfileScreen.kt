@@ -57,6 +57,7 @@ import com.example.shopmobileapplication.data.generateBarcode
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.user.UserRepositoryImpl
 import com.example.shopmobileapplication.ui.main.components.BarCodeFullScreen
+import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.lightGrayBackground
@@ -66,6 +67,7 @@ import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
 import com.google.gson.Gson
+import io.github.jan.supabase.gotrue.gotrue
 import kotlinx.serialization.SerialName
 
 @Composable
@@ -86,6 +88,10 @@ fun ProfileScreen(
     var barcodeWidth by remember { mutableIntStateOf(500) }
     var showBarCodeFullScreen by remember { mutableStateOf(false) }
 
+    var userName by remember { mutableStateOf(UserViewModel.currentUser.name) }
+    var userAddress by remember { mutableStateOf(UserViewModel.currentUser.address ?: "" ) }
+    var userPhone by remember { mutableStateOf(SupabaseClient.client.gotrue.currentUserOrNull()?.phone ?: "") }
+
     LaunchedEffect(userViewModel.discountCard) {
         userViewModel.discountCard?.let {
             barcodeBitmap = generateBarcode(
@@ -97,6 +103,22 @@ fun ProfileScreen(
                 200
             )
         }
+    }
+
+    if (userViewModel.isLoading) {
+//        CircularProgressIndicator()
+    } else if (userViewModel.error != null) {
+        CustomAlertDialog(
+            imageResId = R.drawable.message_icon,
+            title = stringResource(R.string.error),
+            message = stringResource(R.string.data_error),
+            onDismiss = {
+                userViewModel.dismissError()
+            },
+            onConfirm = {
+                userViewModel.dismissError()
+            }
+        )
     }
 
     Column(
@@ -113,7 +135,7 @@ fun ProfileScreen(
                 TextButton(
                     modifier = Modifier.background(lightGrayBackground),
                     onClick = {
-                        // TODO: save
+                        userViewModel.updateUserInfo(userPhone, null, null)
                     }
                 ) {
                     Text(text = stringResource(R.string.complete), style = ralewayRegular, color = blueGradientStart, modifier = Modifier.padding(5.dp))
@@ -187,11 +209,6 @@ fun ProfileScreen(
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                var userName by remember { mutableStateOf(UserViewModel.currentUser.name) }
-                var userAddress by remember { mutableStateOf("NO ADDRESS") }
-//            var userAddress by remember { mutableStateOf(UserViewModel.currentUser.address) }
-                var userPhone by remember { mutableStateOf(UserViewModel.currentUser.phone ?: "") }
-
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = stringResource(R.string.your_name),
