@@ -1,6 +1,5 @@
 package com.example.shopmobileapplication.ui.main.menu
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,8 +30,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.ui.theme.mainMenuIconSelected
 import com.example.shopmobileapplication.ui.theme.mainMenuIconUnselected
-import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
-import kotlinx.coroutines.flow.map
 
 @Composable
 @Preview
@@ -65,8 +62,8 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
     Box(
         modifier = Modifier
             .fillMaxWidth()
-//            .background(Color.White),
-            .background(whiteGreyBackground),
+            .background(Color.Transparent),
+//            .background(whiteGreyBackground),
         contentAlignment = Alignment.BottomCenter
     ) {
         Box (
@@ -77,7 +74,7 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(90.dp),
-                painter = painterResource(R.drawable.bottom_menu_res),
+                painter = painterResource(R.drawable.rounded_bottom_menu_res),
                 contentDescription = "Меню",
                 contentScale = ContentScale.FillBounds
             )
@@ -117,7 +114,7 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
         }
 
         IconButton(
-            modifier = Modifier.padding(bottom = 40.dp).background(shape = CircleShape, color = mainMenuIconSelected),
+            modifier = Modifier.padding(bottom = 50.dp).background(shape = CircleShape, color = mainMenuIconSelected),
             onClick = {
                 mainNavController!!.navigate(BottomMenuItem.BucketScreen.route) {
                     launchSingleTop = true

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,16 +46,18 @@ fun Main(
                 .fillMaxSize()
                 .background(Color.Transparent),
             topBar = { },
-            bottomBar = {
-                Box(
+            floatingActionButton = {
+                Surface(
                     modifier = Modifier
-                        .wrapContentHeight()
                         .fillMaxWidth()
-                        .background(Color.Transparent)
+                        .wrapContentHeight(),
+                    color = Color.Transparent
                 ) {
                     MainBottomNavigation(navController = bottomMenuNavController, mainNavController = mainNavController)
                 }
-            }
+            },
+            floatingActionButtonPosition = FabPosition.Center,
+            bottomBar = { }
         ) {
             Box(
                 modifier = Modifier.padding(it)
@@ -67,7 +70,9 @@ fun Main(
                         FavoritesScreen(navController = mainNavController)
                     }
                     composable(BottomMenuItem.NotificationsScreen.route) {
-                        Box(modifier = Modifier.fillMaxSize().background(whiteGreyBackground)) {
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .background(whiteGreyBackground)) {
                             Text("notifications")
                         }
                     }
