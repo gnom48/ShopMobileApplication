@@ -73,4 +73,5 @@
     <string name="edit_avatar">Изменить фото профиля</string>
     <string name="discount_card">Карта лояльности</string>
     <string name="show_full">Открыть</string>
+    <string name="notifications">Уведомления</string>
 </resources>

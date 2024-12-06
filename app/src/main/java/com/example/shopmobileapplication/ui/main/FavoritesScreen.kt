@@ -29,7 +29,6 @@ import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGr
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.components.FavoriteIconButton
 import com.example.shopmobileapplication.ui.main.components.ModalBottomSheetProductSizes
-import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.FavoriteViewModel
@@ -83,11 +82,7 @@ fun FavoritesScreen(
         ) {
             CustomTopAppBar(
                 title = stringResource(id = R.string.favorites),
-                onBackButtonClick = {
-                    navController!!.navigate(BottomMenuItem.HomeScreen.route) {
-                        launchSingleTop = true
-                    }
-                },
+                onBackButtonClick = { },
                 actionIconButton = {
                     FavoriteIconButton { }
                 }

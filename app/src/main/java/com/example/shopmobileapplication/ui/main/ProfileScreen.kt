@@ -1,10 +1,8 @@
 package com.example.shopmobileapplication.ui.main
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -124,16 +122,15 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(lightGrayBackground)
+            .background(Color.White)
     ) {
         CustomTopAppBar(
+            modifier = Modifier.background(Color.White),
             title = "     " + stringResource(R.string.profile),
-            onBackButtonClick = {
-                navController?.popBackStack()
-            },
+            onBackButtonClick = { },
             actionIconButton = {
                 TextButton(
-                    modifier = Modifier.background(lightGrayBackground),
+                    modifier = Modifier.background(Color.Transparent),
                     onClick = {
                         userViewModel.updateUserInfo(userPhone, null, null)
                     }
@@ -166,7 +163,7 @@ fun ProfileScreen(
             Text(text = UserViewModel.currentUser.name, style = ralewaySubtitle, color = Color.Black, modifier = Modifier.padding(10.dp))
 
             TextButton(
-                modifier = Modifier.background(lightGrayBackground),
+                modifier = Modifier.background(Color.Transparent),
                 onClick = {
                     // TODO: edit avatar
                 }
@@ -216,7 +213,6 @@ fun ProfileScreen(
                 )
                 OutlinedTextField(
                     modifier = Modifier
-                        .border(BorderStroke(0.dp, Color.Transparent))
                         .fillMaxWidth(),
                     trailingIcon = {
                         Icon(
@@ -236,8 +232,8 @@ fun ProfileScreen(
                         userName = it
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray
+                        focusedIndicatorColor = lightGrayBackground,
+                        unfocusedIndicatorColor = lightGrayBackground
                     ),
                     textStyle = ralewayRegular
                 )
@@ -268,8 +264,8 @@ fun ProfileScreen(
                         userAddress = it
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray
+                        focusedIndicatorColor = lightGrayBackground,
+                        unfocusedIndicatorColor = lightGrayBackground
                     ),
                     textStyle = ralewayRegular
                 )
@@ -300,8 +296,8 @@ fun ProfileScreen(
                         userPhone = it
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray
+                        focusedIndicatorColor = lightGrayBackground,
+                        unfocusedIndicatorColor = lightGrayBackground
                     ),
                     textStyle = ralewayRegular
                 )

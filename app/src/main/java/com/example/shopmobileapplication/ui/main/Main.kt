@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,11 +69,7 @@ fun Main(
                         FavoritesScreen(navController = mainNavController)
                     }
                     composable(BottomMenuItem.NotificationsScreen.route) {
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .background(whiteGreyBackground)) {
-                            Text("notifications")
-                        }
+                        NotificationsScreen()
                     }
                     composable(BottomMenuItem.ProfileScreen.route) {
                         ProfileScreen(mainNavController)

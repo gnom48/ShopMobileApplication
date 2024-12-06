@@ -163,3 +163,17 @@ data class OrderDetailsView(
         const val viewName = "order_details_view"
     }
 }
+
+@Serializable
+data class Notification(
+    @SerialName("id") var id: Int,
+    @SerialName("title") var title: String,
+    @SerialName("message") var message: String,
+    @SerialName("send_at") var sendAt: Long,
+    @SerialName("read_at") var readAt: Long?,
+    @SerialName("user_id") var userId: String
+) : BaseModel() {
+    companion object {
+        const val tableName = "notifications"
+    }
+}
