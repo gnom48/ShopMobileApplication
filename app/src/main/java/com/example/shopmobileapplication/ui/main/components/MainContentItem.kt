@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
-import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
+import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed

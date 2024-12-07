@@ -122,22 +122,27 @@ fun DrawerMenuContent(
                                     bottomNavController!!.navigate(item.route) {
                                         launchSingleTop = true
                                     }
-                                }
+                                    drawerScope?.launch {
+                                        drawerState?.close()
+                                    }                                }
                                 is DrawerMenuItem.OrdersScreen, is DrawerMenuItem.SettingsScreen, is BottomMenuItem.BucketScreen -> {
                                     navController!!.navigate(item.route) {
                                         launchSingleTop = true
                                     }
-                                }
-                                is DrawerMenuItem.Exit -> {
                                     drawerScope?.launch {
                                         drawerState?.close()
                                     }
+                                }
+                                is DrawerMenuItem.Exit -> {
                                     userViewModel.signOut()
                                     navController!!.navigate(Layouts.SIGN_IN_LAYOUT) {
                                         popUpTo(Layouts.MAIN_LAYOUT) {
                                             inclusive = true
                                         }
                                         launchSingleTop = true
+                                    }
+                                    drawerScope?.launch {
+                                        drawerState?.close()
                                     }
                                 }
                                 else -> { }

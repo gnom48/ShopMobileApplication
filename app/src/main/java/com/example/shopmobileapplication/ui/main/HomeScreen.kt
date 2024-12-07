@@ -13,22 +13,16 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -49,9 +43,7 @@ import com.example.shopmobileapplication.ui.main.components.CategoriesPanel
 import com.example.shopmobileapplication.ui.main.components.CustomAlertDialog
 import com.example.shopmobileapplication.ui.main.components.CustomLazyVerticalGrid
 import com.example.shopmobileapplication.ui.main.components.DriverMenuIconButton
-import com.example.shopmobileapplication.ui.main.components.ModalBottomSheetProductSizes
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
-import com.example.shopmobileapplication.ui.main.menu.DrawerMenuContent
 import com.example.shopmobileapplication.ui.main.search.SearchLayout
 import com.example.shopmobileapplication.ui.theme.White
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
@@ -60,7 +52,6 @@ import com.example.shopmobileapplication.ui.theme.ralewayTitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
 import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
-import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -99,26 +90,26 @@ fun HomeScreen(
         )
     }
 
-    ModalBottomSheetProductSizes { onShow, onHide ->
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val drawerScope = rememberCoroutineScope()
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet(
-                    modifier = Modifier.fillMaxSize(),
-                    drawerContainerColor = blueGradientStart,
-                    drawerShape = RectangleShape
-                ) {
-                    DrawerMenuContent(
-                        navController = navController,
-                        bottomNavController = bottomNavController,
-                        drawerScope = drawerScope,
-                        drawerState = drawerState
-                    )
-                }
-            },
-        ) {
+//    ModalBottomSheetProductSizes { onShow, onHide ->
+//        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+//        val drawerScope = rememberCoroutineScope()
+//        ModalNavigationDrawer(
+//            drawerState = drawerState,
+//            drawerContent = {
+//                ModalDrawerSheet(
+//                    modifier = Modifier.fillMaxSize(),
+//                    drawerContainerColor = blueGradientStart,
+//                    drawerShape = RectangleShape
+//                ) {
+//                    DrawerMenuContent(
+//                        navController = navController,
+//                        bottomNavController = bottomNavController,
+//                        drawerScope = drawerScope,
+//                        drawerState = drawerState
+//                    )
+//                }
+//            },
+//        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -147,10 +138,10 @@ fun HomeScreen(
                     },
                     navigationIcon = {
                         DriverMenuIconButton {
-                            drawerScope.launch {
-                                if (drawerState.isClosed) drawerState.open()
-                                else drawerState.close()
-                            }
+//                            drawerScope.launch {
+//                                if (drawerState.isClosed) drawerState.open()
+//                                else drawerState.close()
+//                            }
                         }
                     },
                     actions = {
@@ -200,10 +191,10 @@ fun HomeScreen(
                         navController = navController,
                         enableScroll = false,
                         onShowProductSizes = { p: Product? ->
-                            onShow(p)
+//                            onShow(p)
                         },
                         onHideProductSizes = {
-                            onHide()
+//                            onHide()
                         }
                     )
 
@@ -247,6 +238,6 @@ fun HomeScreen(
                     }
                 }
             }
-        }
-    }
+//        }
+//    }
 }
