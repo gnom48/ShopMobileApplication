@@ -1,5 +1,6 @@
 package com.example.shopmobileapplication.ui.main.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -77,42 +78,44 @@ fun ModalBottomSheetProductSizes(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetState = bottomSheetState,
         sheetContent = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                selectedProduct?.let { p ->
-                    SizeColorChipsRow(productSizes = productViewModel.productSizes, onSelected = { _, ps -> ProductSize
-                        selectedProductColorSize = ps
-                    })
-                }
+            Box(modifier = Modifier.fillMaxWidth().padding(bottom = 120.dp)) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    selectedProduct?.let { p ->
+                        SizeColorChipsRow(productSizes = productViewModel.productSizes, onSelected = { _, ps -> ProductSize
+                            selectedProductColorSize = ps
+                        })
+                    }
 
-                if (selectedProductColorSize != null) {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(10.dp, 20.dp)
-                            .clip(RoundedCornerShape(14.dp)),
-                        contentPadding = PaddingValues(10.dp, 10.dp),
-                        colors = ButtonDefaults.buttonColors(blueGradientStart),
-                        onClick = {
-                            scope.launch {
-                                if (selectedProductColorSize != null) {
-                                    bucketViewModel.addProductToBucket(
-                                        Bucket(
-                                            userId = UserViewModel.currentUser.id,
-                                            productExampleId = selectedProductColorSize!!.id,
-                                            quantity = 1
+                    if (selectedProductColorSize != null) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(10.dp, 20.dp)
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentPadding = PaddingValues(10.dp, 10.dp),
+                            colors = ButtonDefaults.buttonColors(blueGradientStart),
+                            onClick = {
+                                scope.launch {
+                                    if (selectedProductColorSize != null) {
+                                        bucketViewModel.addProductToBucket(
+                                            Bucket(
+                                                userId = UserViewModel.currentUser.id,
+                                                productExampleId = selectedProductColorSize!!.id,
+                                                quantity = 1
+                                            )
                                         )
-                                    )
+                                    }
+                                    bottomSheetState.hide()
                                 }
-                                bottomSheetState.hide()
                             }
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(vertical = 5.dp),
+                                text = stringResource(R.string.confirm),
+                                style = ralewayOnButton
+                            )
                         }
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(vertical = 5.dp),
-                            text = stringResource(R.string.confirm),
-                            style = ralewayOnButton
-                        )
                     }
                 }
             }
