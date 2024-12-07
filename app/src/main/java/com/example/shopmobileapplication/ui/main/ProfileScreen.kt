@@ -122,10 +122,9 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(lightGrayBackground)
     ) {
         CustomTopAppBar(
-            modifier = Modifier.background(Color.White),
             title = "     " + stringResource(R.string.profile),
             onBackButtonClick = { },
             actionIconButton = {
@@ -277,7 +276,7 @@ fun ProfileScreen(
                 )
                 OutlinedTextField(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth().padding(bottom = 120.dp),
                     singleLine = true,
                     trailingIcon = {
                         Icon(

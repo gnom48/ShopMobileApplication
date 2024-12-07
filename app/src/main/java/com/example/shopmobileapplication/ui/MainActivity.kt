@@ -48,9 +48,7 @@ class MainActivity : ComponentActivity() {
 
             ShopMobileApplicationTheme {
                 NavHost(
-                    modifier = Modifier
-                        .background(whiteGreyBackground)
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().background(whiteGreyBackground),
                     navController = mainNavController,
                     startDestination = Layouts.GREETING_LAYOUT
                 ) {

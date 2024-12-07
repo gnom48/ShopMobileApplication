@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -96,11 +97,16 @@ fun NotificationsScreen(
             }
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize().background(Color.Transparent).padding(horizontal = 10.dp).padding(top = 10.dp)) {
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Transparent)
+            .padding(horizontal = 10.dp)
+            .padding(top = 10.dp)) {
             items(notificationsViewModel.notifications) { notification: Notification ->
                 Card(
                     modifier = Modifier
-                        .fillMaxWidth().padding(vertical = 5.dp)
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
                         .background(Color.Transparent),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(contentColor = Color.White, containerColor = Color.White),
@@ -114,9 +120,15 @@ fun NotificationsScreen(
                                 showFullText = !showFullText
                             }
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth().padding(10.dp).padding(bottom = 0.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .padding(bottom = 0.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                modifier = Modifier.size(26.dp).padding(5.dp).background(Color.Transparent),
+                                modifier = Modifier
+                                    .size(26.dp)
+                                    .padding(5.dp)
+                                    .background(Color.Transparent),
                                 shape = CircleShape,
                                 color = if (notification.readAt != null) Color.LightGray else blueGradientStart
                             ) { }
@@ -140,6 +152,9 @@ fun NotificationsScreen(
                         }
                     }
                 }
+            }
+            item {
+                Spacer(modifier = Modifier.padding(bottom = 120.dp))
             }
         }
     }

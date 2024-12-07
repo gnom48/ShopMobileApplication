@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shopmobileapplication.ui.main.menu.BottomMenuItem
 import com.example.shopmobileapplication.ui.main.menu.MainBottomNavigation
+import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 
 @Preview
@@ -43,7 +44,7 @@ fun Main(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Transparent),
+                .background(lightGrayBackground),
             topBar = { },
             floatingActionButton = {
                 Surface(
@@ -59,7 +60,9 @@ fun Main(
             bottomBar = { }
         ) {
             Box(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+                    .background(lightGrayBackground)
             ) {
                 NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
                     composable(BottomMenuItem.HomeScreen.route) {

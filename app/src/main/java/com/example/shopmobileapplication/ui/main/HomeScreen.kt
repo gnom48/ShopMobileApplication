@@ -231,7 +231,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .background(whiteGreyBackground)
-                            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+                            .padding(start = 10.dp, end = 10.dp, bottom = 120.dp),
                         shadowElevation = 3.dp
                     ) {
                         Image(

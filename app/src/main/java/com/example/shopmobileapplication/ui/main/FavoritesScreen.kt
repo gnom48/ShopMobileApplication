@@ -77,7 +77,7 @@ fun FavoritesScreen(
     ModalBottomSheetProductSizes { onShow, onHide ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().padding(bottom = 120.dp)
                 .background(whiteGreyBackground)
         ) {
             CustomTopAppBar(
