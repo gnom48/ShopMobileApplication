@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 
 class SupabaseViewModel: ViewModel() {
     private var _dataState = MutableStateFlow<DataState>(DataState.Loading)
@@ -68,7 +67,7 @@ class SupabaseViewModel: ViewModel() {
             try {
                 _dataState.value = DataState.Loading
                 val bucket = SupabaseClient.client.storage[bucketName]
-                val url = bucket.createSignedUrl("$fileName", 20.minutes)
+                val url = bucket.publicUrl("$fileName")
                 onImageUrlRetriever(url)
                 _dataState.value = DataState.Success("Read file from bucket successfully!")
             } catch (e: Exception) {

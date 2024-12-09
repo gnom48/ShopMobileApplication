@@ -48,7 +48,6 @@ import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Order
 import com.example.shopmobileapplication.data.ProductSize
 import com.example.shopmobileapplication.data.bucket.BucketRepositoryImpl
-import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.ui.main.components.CustomTopAppBar
 import com.example.shopmobileapplication.ui.main.components.OrderPrice
@@ -60,6 +59,7 @@ import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.BucketViewModel
 import com.example.shopmobileapplication.ui.viewmodel.BucketViewModelFactory
+import com.example.shopmobileapplication.ui.viewmodel.SupabaseViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.skydoves.flexible.bottomsheet.material3.BottomSheetDefaults
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
@@ -73,17 +73,19 @@ import java.time.ZoneOffset
 @Composable
 @Preview
 fun BucketScreenPreview() {
-    BucketScreen(null)
+    BucketScreen(null, supabaseViewModel = viewModel())
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun BucketScreen(
     navController: NavController?,
-    bucketViewModel: BucketViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
-        BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )
-    )
+    bucketViewModel: BucketViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = BucketViewModelFactory(
+            BucketRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        )
+    ),
+    supabaseViewModel: SupabaseViewModel = viewModel()
 ) {
     LaunchedEffect(Unit) {
         bucketViewModel.getBucketList(UserViewModel.currentUser)
@@ -228,8 +230,12 @@ fun BucketScreen(
                                             .padding(10.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
+                                        var imageSignedUrl by remember { mutableStateOf<String?>(null) }
+                                        supabaseViewModel.getSignedUrlFromBucket(fileName = pr?.image.toString()) { url: String? ->
+                                            imageSignedUrl = url
+                                        }
                                         AsyncImage(
-                                            model = ImageStorage.getLink(pr?.image),
+                                            model = imageSignedUrl,
                                             contentDescription = "image",
                                             modifier = Modifier
                                                 .background(

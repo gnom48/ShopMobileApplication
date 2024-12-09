@@ -3,6 +3,7 @@ package com.example.shopmobileapplication.ui.main
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -76,29 +77,29 @@ fun Main(
             floatingActionButtonPosition = FabPosition.Center,
             bottomBar = { }
         ) {
-            ModalBottomSheetProductSizes { onShow, onHide ->
-                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                val drawerScope = rememberCoroutineScope()
-                ModalNavigationDrawer(
-                    drawerState = drawerState,
-                    drawerContent = {
-                        ModalDrawerSheet(
-                            modifier = Modifier.fillMaxSize(),
-                            drawerContainerColor = blueGradientStart,
-                            drawerShape = RectangleShape
-                        ) {
-                            DrawerMenuContent(
-                                navController = mainNavController,
-                                bottomNavController = bottomMenuNavController,
-                                drawerScope = drawerScope,
-                                drawerState = drawerState
-                            )
-                        }
-                    }
+            var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val drawerScope = rememberCoroutineScope()
+
+            if (isLandscape || isTablet) {
+                drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
+                Row(
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(it)
+                            .weight(0.3f)
+                            .background(blueGradientStart)
+                    ) {
+                        DrawerMenuContent(
+                            navController = mainNavController,
+                            bottomNavController = bottomMenuNavController,
+                            drawerScope = drawerScope,
+                            drawerState = drawerState
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(0.7f)
                             .background(lightGrayBackground)
                     ) {
                         NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
@@ -113,6 +114,47 @@ fun Main(
                             }
                             composable(BottomMenuItem.ProfileScreen.route) {
                                 ProfileScreen(mainNavController)
+                            }
+                        }
+                    }
+                }
+            } else {
+                ModalBottomSheetProductSizes { onShow, onHide ->
+                    ModalNavigationDrawer(
+                        drawerState = drawerState,
+                        drawerContent = {
+                            ModalDrawerSheet(
+                                modifier = Modifier.fillMaxSize(),
+                                drawerContainerColor = blueGradientStart,
+                                drawerShape = RectangleShape
+                            ) {
+                                DrawerMenuContent(
+                                    navController = mainNavController,
+                                    bottomNavController = bottomMenuNavController,
+                                    drawerScope = drawerScope,
+                                    drawerState = drawerState
+                                )
+                            }
+                        }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(it)
+                                .background(lightGrayBackground)
+                        ) {
+                            NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
+                                composable(BottomMenuItem.HomeScreen.route) {
+                                    HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController)
+                                }
+                                composable(BottomMenuItem.FavoritesScreen.route) {
+                                    FavoritesScreen(navController = mainNavController)
+                                }
+                                composable(BottomMenuItem.NotificationsScreen.route) {
+                                    NotificationsScreen()
+                                }
+                                composable(BottomMenuItem.ProfileScreen.route) {
+                                    ProfileScreen(mainNavController)
+                                }
                             }
                         }
                     }

@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -91,18 +94,9 @@ fun DrawerMenuContent(
                 .padding(horizontal = 20.dp, vertical = 40.dp),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Surface(
-                modifier = Modifier.size(120.dp),
-                shape = CircleShape,
-                color = Color.LightGray
-            ) {
-                Image(imageVector = Icons.Default.AccountCircle, colorFilter = ColorFilter.tint(
-                    Color.White), contentDescription = "avatar", contentScale = ContentScale.Crop)
-            }
-            Text(text = UserViewModel.currentUser.name, style = ralewayTitle, color = Color.White, modifier = Modifier.padding(20.dp))
-
             val navigationItems = listOf<NavigationItem>(
                 BottomMenuItem.ProfileScreen,
+                BottomMenuItem.HomeScreen,
                 BottomMenuItem.BucketScreen,
                 BottomMenuItem.FavoritesScreen,
                 DrawerMenuItem.OrdersScreen,
@@ -110,54 +104,117 @@ fun DrawerMenuContent(
                 DrawerMenuItem.SettingsScreen,
                 DrawerMenuItem.Exit
             )
-            navigationItems.forEach { item: NavigationItem ->
-                if (item is DrawerMenuItem.Exit) {
-                    HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(20.dp))
-                }
-                Button(
-                    onClick = {
-                        try {
-                            when(item) {
-                                is BottomMenuItem.ProfileScreen, is BottomMenuItem.FavoritesScreen, is BottomMenuItem.NotificationsScreen -> {
-                                    bottomNavController!!.navigate(item.route) {
-                                        launchSingleTop = true
-                                    }
-                                    drawerScope?.launch {
-                                        drawerState?.close()
-                                    }                                }
-                                is DrawerMenuItem.OrdersScreen, is DrawerMenuItem.SettingsScreen, is BottomMenuItem.BucketScreen -> {
-                                    navController!!.navigate(item.route) {
-                                        launchSingleTop = true
-                                    }
-                                    drawerScope?.launch {
-                                        drawerState?.close()
-                                    }
-                                }
-                                is DrawerMenuItem.Exit -> {
-                                    userViewModel.signOut()
-                                    navController!!.navigate(Layouts.SIGN_IN_LAYOUT) {
-                                        popUpTo(Layouts.MAIN_LAYOUT) {
-                                            inclusive = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                    drawerScope?.launch {
-                                        drawerState?.close()
-                                    }
-                                }
-                                else -> { }
-                            }
-                        } catch (_: Exception) { }
+            LazyColumn(modifier = Modifier.fillMaxHeight()) {
+                item {
+                    Surface(
+                        modifier = Modifier.size(80.dp),
+                        shape = CircleShape,
+                        color = Color.LightGray
+                    ) {
+                        Image(imageVector = Icons.Default.AccountCircle, colorFilter = ColorFilter.tint(
+                            Color.White), contentDescription = "avatar", contentScale = ContentScale.Crop)
+                    }
+                    Text(text = UserViewModel.currentUser.name, style = ralewayTitle, color = Color.White, modifier = Modifier.padding(10.dp))
 
-                    },
-                    colors = ButtonDefaults.buttonColors(Color.Transparent)
-                ) {
-                    Row {
-                        Icon(painter = painterResource(id = item.iconId), contentDescription = item.title, tint = Color.White, modifier = Modifier.size(18.dp))
-                        Text(text = item.title, style = ralewayRegular, color = Color.White, modifier = Modifier.padding(start = 20.dp))
+                }
+                items(navigationItems) { item: NavigationItem ->
+                    if (item is DrawerMenuItem.Exit) {
+                        HorizontalDivider(color = Color.LightGray, modifier = Modifier.width(80.dp).padding(start = 20.dp).padding(vertical = 10.dp))
+                    }
+                    Button(
+                        onClick = {
+                            try {
+                                when(item) {
+                                    is BottomMenuItem.ProfileScreen, is BottomMenuItem.FavoritesScreen, is BottomMenuItem.NotificationsScreen, is BottomMenuItem.HomeScreen -> {
+                                        bottomNavController!!.navigate(item.route) {
+                                            launchSingleTop = true
+                                        }
+                                        drawerScope?.launch {
+                                            drawerState?.close()
+                                        }                                }
+                                    is DrawerMenuItem.OrdersScreen, is DrawerMenuItem.SettingsScreen, is BottomMenuItem.BucketScreen -> {
+                                        navController!!.navigate(item.route) {
+                                            launchSingleTop = true
+                                        }
+                                        drawerScope?.launch {
+                                            drawerState?.close()
+                                        }
+                                    }
+                                    is DrawerMenuItem.Exit -> {
+                                        userViewModel.signOut()
+                                        navController!!.navigate(Layouts.SIGN_IN_LAYOUT) {
+                                            popUpTo(Layouts.MAIN_LAYOUT) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                        }
+                                        drawerScope?.launch {
+                                            drawerState?.close()
+                                        }
+                                    }
+                                    else -> { }
+                                }
+                            } catch (_: Exception) { }
+
+                        },
+                        colors = ButtonDefaults.buttonColors(Color.Transparent)
+                    ) {
+                        Row {
+                            Icon(painter = painterResource(id = item.iconId), contentDescription = item.title, tint = Color.White, modifier = Modifier.size(18.dp))
+                            Text(text = item.title, style = ralewayRegular, color = Color.White, modifier = Modifier.padding(start = 20.dp))
+                        }
                     }
                 }
             }
+
+//            navigationItems.forEach { item: NavigationItem ->
+//                if (item is DrawerMenuItem.Exit) {
+//                    HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(20.dp))
+//                }
+//                Button(
+//                    onClick = {
+//                        try {
+//                            when(item) {
+//                                is BottomMenuItem.ProfileScreen, is BottomMenuItem.FavoritesScreen, is BottomMenuItem.NotificationsScreen -> {
+//                                    bottomNavController!!.navigate(item.route) {
+//                                        launchSingleTop = true
+//                                    }
+//                                    drawerScope?.launch {
+//                                        drawerState?.close()
+//                                    }                                }
+//                                is DrawerMenuItem.OrdersScreen, is DrawerMenuItem.SettingsScreen, is BottomMenuItem.BucketScreen -> {
+//                                    navController!!.navigate(item.route) {
+//                                        launchSingleTop = true
+//                                    }
+//                                    drawerScope?.launch {
+//                                        drawerState?.close()
+//                                    }
+//                                }
+//                                is DrawerMenuItem.Exit -> {
+//                                    userViewModel.signOut()
+//                                    navController!!.navigate(Layouts.SIGN_IN_LAYOUT) {
+//                                        popUpTo(Layouts.MAIN_LAYOUT) {
+//                                            inclusive = true
+//                                        }
+//                                        launchSingleTop = true
+//                                    }
+//                                    drawerScope?.launch {
+//                                        drawerState?.close()
+//                                    }
+//                                }
+//                                else -> { }
+//                            }
+//                        } catch (_: Exception) { }
+//
+//                    },
+//                    colors = ButtonDefaults.buttonColors(Color.Transparent)
+//                ) {
+//                    Row {
+//                        Icon(painter = painterResource(id = item.iconId), contentDescription = item.title, tint = Color.White, modifier = Modifier.size(18.dp))
+//                        Text(text = item.title, style = ralewayRegular, color = Color.White, modifier = Modifier.padding(start = 20.dp))
+//                    }
+//                }
+//            }
         }
     }
 }

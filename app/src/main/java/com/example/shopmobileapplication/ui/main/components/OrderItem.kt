@@ -22,6 +22,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,14 +36,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.OrderDetailsView
-import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
+import com.example.shopmobileapplication.ui.viewmodel.SupabaseViewModel
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
@@ -75,6 +80,7 @@ fun OrderItemPreview() {
 fun OrderItem(
     modifier: Modifier = Modifier.fillMaxSize(),
     data: OrderDetailsView,
+    supabaseViewModel: SupabaseViewModel = viewModel(),
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -104,8 +110,12 @@ fun OrderItem(
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
+                    var imageSignedUrl by remember { mutableStateOf<String?>(null) }
+                    supabaseViewModel.getSignedUrlFromBucket(fileName = data.image) { url: String? ->
+                        imageSignedUrl = url
+                    }
                     AsyncImage(
-                        model = ImageStorage.getLink(data.image),
+                        model = imageSignedUrl,
                         contentDescription = "image",
                         error = painterResource(id = R.drawable.default_shoes),
                         modifier = Modifier

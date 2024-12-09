@@ -22,6 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,18 +35,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.Seller
-import com.example.shopmobileapplication.data.network.ImageStorage
 import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.favoriteIconRed
 import com.example.shopmobileapplication.ui.theme.favoriteRed
 import com.example.shopmobileapplication.ui.theme.lightGrayBackground
 import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
+import com.example.shopmobileapplication.ui.viewmodel.SupabaseViewModel
 
 @Composable
 @Preview
@@ -51,7 +56,6 @@ fun MainContentItemPreview() {
         Seller(0, "Best Seller", ""),
         Product("e456rgt7hk97h8", "Nike Air Max", 1, "Best shoes", 752.0, "", 0),
         null, { _, _ -> }, { _, _ -> },
-//        remember {mutableStateOf(false)}, remember {mutableStateOf(false)}
         false, false
     )
 }
@@ -62,7 +66,8 @@ fun MainContentItem(
     onBucketClick: (Product, NavController) -> Unit,
     onFavoriteClick: (Product, NavController) -> Unit,
     isInFavorite: Boolean,
-    isInBucket: Boolean
+    isInBucket: Boolean,
+    supabaseViewModel: SupabaseViewModel = viewModel()
 ) {
     Surface(
         shape = RoundedCornerShape(18.dp),
@@ -116,18 +121,15 @@ fun MainContentItem(
                     .weight(0.4f)
                     .background(shape = RoundedCornerShape(15.dp), color = Color.Transparent)
             ) {
-
-//                var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-//                supabaseViewModel.getSignedUrlFromBucket(fileName = "1.png") { url: String? ->
-//                    if (url != null) {
-//                        imageSignedUrl = "http://31.129.102.158:5556/static/" + url //"https://png.pngtree.com/png-clipart/20220510/original/pngtree-cool-pair-of-casual-shoes-with-blue-wave-patterned-icon-element-png-image_7692533.png"
-//                    }
-//                }
+                var imageSignedUrl by remember { mutableStateOf<String?>(null) }
+                supabaseViewModel.getSignedUrlFromBucket(fileName = product.image.toString()) { url: String? ->
+                    imageSignedUrl = url
+                }
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxHeight()
                         .background(shape = RoundedCornerShape(18.dp), color = Color.Transparent),
-                    model = ImageStorage.getLink(product.image),
+                    model = imageSignedUrl,
                     error = painterResource(id = R.drawable.default_shoes),
                     contentDescription = "Фото",
                     contentScale = ContentScale.FillBounds,

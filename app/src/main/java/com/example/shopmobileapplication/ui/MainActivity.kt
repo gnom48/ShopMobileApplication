@@ -98,12 +98,14 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(BottomMenuItem.BucketScreen.route) {
                         BucketScreen(
-                            navController = mainNavController
+                            navController = mainNavController,
+                            supabaseViewModel = viewModel()
                         )
                     }
                     composable(Layouts.BUCKET_LAYOUT) {
                         BucketScreen(
-                            navController = mainNavController
+                            navController = mainNavController,
+                            supabaseViewModel = viewModel()
                         )
                     }
                     composable(Layouts.DETAILS_SCREEN + "/{productId}") { backStackEntry ->
