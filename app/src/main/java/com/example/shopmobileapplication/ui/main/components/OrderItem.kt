@@ -111,7 +111,7 @@ fun OrderItem(
                     contentAlignment = Alignment.Center
                 ) {
                     var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-                    supabaseViewModel.getSignedUrlFromBucket(fileName = data.image) { url: String? ->
+                    supabaseViewModel.getUrlFromPublicBucketCallback(fileName = data.image) { url: String? ->
                         imageSignedUrl = url
                     }
                     AsyncImage(

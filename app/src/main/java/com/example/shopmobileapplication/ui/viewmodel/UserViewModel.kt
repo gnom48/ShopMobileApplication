@@ -110,10 +110,10 @@ class UserViewModel(
         }
     }
 
-    fun updateUserInfo(newPhone: String? = null, newEmail: String? = null, newPassword: String? = null) {
+    fun updateUserInfo(newPhone: String? = null, newEmail: String? = null, newPassword: String? = null, newImage: String? = null, newName: String? = null) {
         viewModelScope.launch {
             withLoading {
-                userRepository.updateUserInfo(newPhone, newEmail, newPassword).onSuccess { user ->
+                userRepository.updateUserInfo(newPhone, newEmail, newPassword, newImage, newName).onSuccess { user ->
                     _error.value = null
                 }.onFailure { e ->
                     _error.value = e

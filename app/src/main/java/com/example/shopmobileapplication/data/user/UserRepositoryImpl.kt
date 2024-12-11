@@ -77,13 +77,19 @@ class UserRepositoryImpl(
         Result.failure(e)
     }
 
-    override suspend fun updateUserInfo(newPhone: String?, newEmail: String?, newPassword: String?): Result<UserInfo> = try {
+    override suspend fun updateUserInfo(newPhone: String?, newEmail: String?, newPassword: String?, newImage: String?, newName: String?): Result<UserInfo> = try {
         supabaseClient.gotrue.modifyUser {
             newPhone?.let { phoneNumber = it }
             newEmail?.let { email = it }
             newPassword?.let { password = it }
         }
 
+        supabaseClient.postgrest[User.tableName].update({
+            newImage?.let { User::image setTo it }
+            newName?.let { User::name setTo it }
+        }) {
+            User::id eq UserViewModel.currentUser.id
+        }
         Result.success(supabaseClient.gotrue.currentUserOrNull()!!)
     } catch (e: Exception) {
         Result.failure(e)

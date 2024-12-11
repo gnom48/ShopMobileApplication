@@ -70,8 +70,15 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.fragment:fragment-ktx:1.8.3")
     implementation("androidx.core:core-i18n:1.0.0-alpha01")
+
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+
+//    val mockitoVersion = "5.4.0"
+//    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+//    testImplementation("org.mockito:mockito-inline:$mockitoVersion")
+//    testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
+//    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
@@ -83,6 +90,8 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
     implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabaseVersion")
     implementation("io.github.jan-tennert.supabase:realtime-kt:$supabaseVersion")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
     implementation("io.ktor:ktor-client-cio:2.3.4")
 
@@ -102,4 +111,5 @@ dependencies {
 
     val zxingVersion = "3.5.2"
     implementation("com.google.zxing:core:$zxingVersion")
+    implementation(kotlin("test"))
 }

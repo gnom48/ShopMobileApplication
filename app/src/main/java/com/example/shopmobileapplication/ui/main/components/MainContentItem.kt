@@ -122,7 +122,7 @@ fun MainContentItem(
                     .background(shape = RoundedCornerShape(15.dp), color = Color.Transparent)
             ) {
                 var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-                supabaseViewModel.getSignedUrlFromBucket(fileName = product.image.toString()) { url: String? ->
+                supabaseViewModel.getUrlFromPublicBucketCallback(fileName = product.image.toString()) { url: String? ->
                     imageSignedUrl = url
                 }
                 AsyncImage(

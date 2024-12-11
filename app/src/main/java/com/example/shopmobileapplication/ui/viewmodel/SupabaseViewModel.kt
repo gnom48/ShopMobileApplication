@@ -1,79 +1,105 @@
 package com.example.shopmobileapplication.ui.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.shopmobileapplication.data.DataState
 import com.example.shopmobileapplication.data.network.SupabaseClient
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.storage.BucketApi
 import io.github.jan.supabase.storage.storage
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
 
-class SupabaseViewModel: ViewModel() {
-    private var _dataState = MutableStateFlow<DataState>(DataState.Loading)
-    val dataState: StateFlow<DataState> = _dataState.asStateFlow()
+class SupabaseViewModel: BaseViewModel() {
+    private var _imgState = mutableStateOf<DataState>(DataState.Nothing)
+    val imgState by _imgState
 
-    fun createBucket(name: String) {
-        viewModelScope.launch {
+    fun dismissSuccess() {
+        _imgState.value = DataState.Nothing
+    }
+
+    private val supabaseClient = SupabaseClient.client
+
+    private suspend fun createPrivateBucketInNotExists(bucketName: String): BucketApi? = withLoading {
             try {
-                _dataState.value = DataState.Loading
-                SupabaseClient.client.storage.createBucket(name) {
+                _error.value = null
+                val b = supabaseClient.storage.retrieveBucketById(bucketName)!!
+                supabaseClient.storage[bucketName]
+            } catch (e: RestException) {
+                supabaseClient.storage.createBucket(bucketName) {
                     public = false
-                    fileSizeLimit = 30.megabytes
+                    fileSizeLimit = 10.megabytes
                 }
-                _dataState.value = DataState.Success("Created bucket successfully!")
+                _error.value = null
+                supabaseClient.storage[bucketName]!!
             } catch (e: Exception) {
-                _dataState.value = DataState.Error("Creating bucket error: ${e.message}")
+                _error.value = e
+                null
             }
         }
-    }
 
-    fun uploadFileToBucket(bucketName: String = "images", fileName: String, byteArray: ByteArray) {
+    fun uploadFileToPrivateBucket(userId: String = UserViewModel.currentUser.id, fileName: String, byteArray: ByteArray) {
+        val bucketName = "images-$userId"
         viewModelScope.launch {
-            try {
-                _dataState.value = DataState.Loading
-                val bucket = SupabaseClient.client.storage[bucketName]
-                bucket.upload("$fileName", byteArray, true)
-                Log.d("tmp", "Upload to bucket successfully!")
-                _dataState.value = DataState.Success("Upload to bucket successfully!")
-            } catch (e: Exception) {
-                Log.d("tmp", "Upload to bucket error: ${e.message}")
-                _dataState.value = DataState.Error("Upload to bucket error: ${e.message}")
+            withLoading {
+                if (byteArray.isEmpty() || fileName.isNullOrEmpty()) {
+                    return@withLoading
+                }
+                try {
+                    val bucket = createPrivateBucketInNotExists(bucketName)
+                    bucket!!.upload(fileName, byteArray, true)
+                    _error.value = null
+                    _imgState.value = DataState.Success()
+                } catch (e: Exception) {
+                    _error.value = e
+                }
             }
         }
     }
 
-//    /**
-//     * для отпарвки нужен launcher
-//     *
-//     * val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-//     *         if (uri != null) {
-//     *             uri.uriToBytesArray(context)?.let {
-//     *                 viewModel.uploadFileToBucket("images", uri.path.toString().split("/").last() + ".jpg", it)
-//     *             }
-//     *         }
-//     *     }
-//     *
-//     * его надо загрузить
-//     *
-//     * viewModel.createBucket("images")
-//     * launcher.launch("image/*")
-//     */
-
-    fun getSignedUrlFromBucket(bucketName: String = "images", fileName: String, onImageUrlRetriever: (url: String?) -> Unit) {
+    fun getUrlFromPublicBucketCallback(bucketName: String = "images", fileName: String, onImageUrlRetriever: (url: String?) -> Unit) {
         viewModelScope.launch {
-            try {
-                _dataState.value = DataState.Loading
-                val bucket = SupabaseClient.client.storage[bucketName]
-                val url = bucket.publicUrl("$fileName")
-                onImageUrlRetriever(url)
-                _dataState.value = DataState.Success("Read file from bucket successfully!")
-            } catch (e: Exception) {
-                onImageUrlRetriever(null)
-                _dataState.value = DataState.Error("read from bucket error: ${e.message}")
+            withLoading {
+                try {
+                    val bucket = SupabaseClient.client.storage[bucketName]
+                    val url = bucket.publicUrl(fileName)
+                    onImageUrlRetriever(url)
+                    _error.value = null
+                } catch (e: Exception) {
+                    onImageUrlRetriever(null)
+                    _error.value = e
+                }
             }
         }
     }
+
+    fun getSignedUrlFromPrivateBucket(userId: String, fileName: String, onImageUrlRetriever: (url: String?) -> Unit) {
+        val bucketName = "images-$userId"
+        viewModelScope.launch {
+            withLoading {
+                try {
+                    val bucket = SupabaseClient.client.storage[bucketName]
+                    val url = bucket.createSignedUrl(fileName, 10.minutes)
+                    _error.value = null
+                    onImageUrlRetriever("${SupabaseClient.supabaseBaseUrl}/storage/v1/$url")
+                } catch (e: Exception) {
+                    _error.value = e
+                    onImageUrlRetriever(null)
+                }
+            }
+        }
+    }
+
+    suspend fun getUrlFromPublicBucket(bucketName: String, fileName: String): String? = withLoading {
+            try {
+                val bucket = SupabaseClient.client.storage[bucketName]
+                val url = bucket.publicUrl(fileName)
+                _error.value = null
+                url
+            } catch (e: Exception) {
+                _error.value = e
+                null
+            }
+        }
 }

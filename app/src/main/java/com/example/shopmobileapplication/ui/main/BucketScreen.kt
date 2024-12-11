@@ -231,7 +231,7 @@ fun BucketScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         var imageSignedUrl by remember { mutableStateOf<String?>(null) }
-                                        supabaseViewModel.getSignedUrlFromBucket(fileName = pr?.image.toString()) { url: String? ->
+                                        supabaseViewModel.getUrlFromPublicBucketCallback(fileName = pr?.image.toString()) { url: String? ->
                                             imageSignedUrl = url
                                         }
                                         AsyncImage(
