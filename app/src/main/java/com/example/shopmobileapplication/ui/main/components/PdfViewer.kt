@@ -1,34 +1,5 @@
 package com.example.shopmobileapplication.ui.main.components
 
-//import android.webkit.WebView
-//import android.webkit.WebViewClient
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.viewinterop.AndroidView
-//
-//@Composable
-//fun PdfViewer(pdfAssetName: String) {
-//    AndroidView(
-//        // TODO: не работает - пустой экран
-//        factory = { context ->
-//            WebView(context).apply {
-//                settings.javaScriptEnabled = true
-//                settings.allowFileAccess = true
-//                settings.allowFileAccessFromFileURLs = true
-//                settings.builtInZoomControls = true
-//                settings.displayZoomControls = false
-//                webViewClient = WebViewClient()
-//                loadUrl("file:///android_asset/$pdfAssetName")
-//            }
-//        },
-//        update = { webView ->
-//            webView.loadUrl("file:///android_asset/$pdfAssetName")
-//        },
-//        modifier = Modifier.fillMaxSize()
-//    )
-//}
-
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer

@@ -21,25 +21,6 @@ class OrderRepositoryImpl(
         Result.failure(e)
     }
 
-//    override suspend fun addOrder(orders: List<Order>): Result<String> = try {
-//        val orderSingleId = UUID.randomUUID().toString()
-//
-//        supabaseClient.postgrest.rpc("begin") // FIXME: не работает транзакция (а хотелось бы)
-//        try {
-//            orders.forEach { order: Order ->
-//                order.id = orderSingleId
-//                supabaseClient.postgrest[Order.tableName].insert(order)
-//            }
-//            supabaseClient.postgrest.rpc("commit")
-//            Result.success(orderSingleId)
-//        } catch (e: Exception) {
-//            supabaseClient.postgrest.rpc("rollback")
-//            Result.failure(e)
-//        }
-//    } catch (e: Exception) {
-//        Result.failure(e)
-//    }
-
     override suspend fun getOrdersDetails(user: User, orderId: String?): Result<List<OrderDetailsView>> = try {
         Result.success(supabaseClient.postgrest[OrderDetailsView.viewName].select(filter = {
             if (orderId != null) {

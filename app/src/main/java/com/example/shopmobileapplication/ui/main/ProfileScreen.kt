@@ -3,6 +3,7 @@ package com.example.shopmobileapplication.ui.main
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -82,6 +83,7 @@ import com.example.shopmobileapplication.ui.theme.ralewaySubtitle
 import com.example.shopmobileapplication.ui.viewmodel.SupabaseViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
+import com.example.shopmobileapplication.utils.getBitmapFromUri
 import com.google.gson.Gson
 import io.github.jan.supabase.gotrue.gotrue
 import kotlinx.coroutines.delay
@@ -402,7 +404,7 @@ fun FloatingActionButtons(
     }
 
     val context = LocalContext.current
-    val bitmapLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap ->
+    val bitmapFromCameraLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap ->
         if (bitmap != null) {
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
@@ -410,10 +412,22 @@ fun FloatingActionButtons(
             supabaseViewModel.uploadFileToPrivateBucket(UserViewModel.currentUser.id, "av.jpg", byteArray)
         }
     }
+    val bitmapFromGalleryLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            val bitmap = getBitmapFromUri(context, it)
+            if (bitmap != null) {
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+                val byteArray = byteArrayOutputStream.toByteArray()
+                supabaseViewModel.uploadFileToPrivateBucket(UserViewModel.currentUser.id, "av.jpg", byteArray)
+            }
+        }
+    }
+
 
     val permissionLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            bitmapLauncher.launch(null)
+            bitmapFromCameraLauncher.launch(null)
         }
     }
 
@@ -463,7 +477,7 @@ fun FloatingActionButtons(
                                 permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                             }
                             else -> {
-                                bitmapLauncher.launch(null)
+                                bitmapFromCameraLauncher.launch(null)
                             }
                         }
                     },
@@ -489,7 +503,7 @@ fun FloatingActionButtons(
                 FloatingActionButton(
                     modifier = Modifier.padding(top = 16.dp),
                     onClick = {
-                        // TODO: upload photo from gallery
+                        bitmapFromGalleryLauncher.launch("image/*")
                     },
                     shape = CircleShape,
                     containerColor = blueGradientStart

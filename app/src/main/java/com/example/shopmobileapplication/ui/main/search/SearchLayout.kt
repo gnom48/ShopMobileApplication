@@ -163,27 +163,6 @@ fun SearchLayout(
             Column(modifier = Modifier
                 .background(color = whiteGreyBackground)
                 .fillMaxSize()) {
-//                    Divider()
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.Absolute.Right
-//                    ) {
-//                        TextButton(
-//                            modifier = Modifier
-//                                .wrapContentSize(),
-//                            onClick = {
-//                                // TODO: очистить локальную историю поиска
-//                                searchHistory
-//                                    .toMutableList()
-//                                    .clear()
-//                            }
-//                        ) {
-//                            Text(
-//                                style = ralewaySubregular,
-//                                text = stringResource(R.string.clear_history)
-//                            )
-//                        }
-//                    }
 
                 if (searchHistory.isEmpty()) {
                     Text(

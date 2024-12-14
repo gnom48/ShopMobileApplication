@@ -6,6 +6,7 @@ import com.example.shopmobileapplication.data.Favorite
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.ProductSize
+import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.ui.main.search.ProductFilter
 import io.github.jan.supabase.SupabaseClient
@@ -161,6 +162,15 @@ class ProductRepositoryImpl(
     override suspend fun getProductsCategories(): Result<List<ProductCategory>> = try {
         val categories = supabaseClient.postgrest[ProductCategory.tableName].select().decodeList<ProductCategory>()
         Result.success(categories)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    override suspend fun getSellerById(sellerId: Int): Result<Seller> = try {
+        val seller = supabaseClient.postgrest[Seller.tableName].select(filter = {
+            Seller::id eq sellerId
+        }).decodeSingle<Seller>()
+        Result.success(seller)
     } catch (e: Exception) {
         Result.failure(e)
     }

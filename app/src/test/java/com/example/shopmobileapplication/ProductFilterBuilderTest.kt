@@ -26,19 +26,6 @@ class ProductFilterBuilderTest {
         assertEquals(listOf(1, 2, 3), productFilter.stores)
     }
 
-//    @Test
-//    fun `build should throw MinGTEMaxException when minPrice is greater than maxPrice`() {
-//        // Arrange
-//        val builder = ProductFilter.Builder()
-//            .minPrice(20.0)
-//            .maxPrice(10.0)
-//
-//        // Act & Assert
-//        assertFailsWith<NumericException.MinGTEMaxException> { // FIXME: нету
-//            builder.build()
-//        }
-//    }
-
     @Test
     fun `build should return ProductFilter with null values when not set`() {
         // Arrange

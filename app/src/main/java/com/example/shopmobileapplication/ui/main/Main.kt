@@ -82,38 +82,40 @@ fun Main(
 
             if (isLandscape || isTablet) {
                 drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
-                Row(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(0.3f)
-                            .background(blueGradientStart)
+                ModalBottomSheetProductSizes { onShow, onHide ->
+                    Row(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        DrawerMenuContent(
-                            navController = mainNavController,
-                            bottomNavController = bottomMenuNavController,
-                            drawerScope = drawerScope,
-                            drawerState = drawerState
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(0.7f)
-                            .background(lightGrayBackground)
-                    ) {
-                        NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
-                            composable(BottomMenuItem.HomeScreen.route) {
-                                HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController)
-                            }
-                            composable(BottomMenuItem.FavoritesScreen.route) {
-                                FavoritesScreen(navController = mainNavController)
-                            }
-                            composable(BottomMenuItem.NotificationsScreen.route) {
-                                NotificationsScreen()
-                            }
-                            composable(BottomMenuItem.ProfileScreen.route) {
-                                ProfileScreen(mainNavController)
+                        Box(
+                            modifier = Modifier
+                                .weight(0.3f)
+                                .background(blueGradientStart)
+                        ) {
+                            DrawerMenuContent(
+                                navController = mainNavController,
+                                bottomNavController = bottomMenuNavController,
+                                drawerScope = drawerScope,
+                                drawerState = drawerState
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(0.7f)
+                                .background(lightGrayBackground)
+                        ) {
+                            NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
+                                composable(BottomMenuItem.HomeScreen.route) {
+                                    HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController, onShowModalBottomSheetProductSizes = onShow, onHideModalBottomSheetProductSizes = onHide, drawerMenuState = null, drawerMenuScope = null)
+                                }
+                                composable(BottomMenuItem.FavoritesScreen.route) {
+                                    FavoritesScreen(navController = mainNavController)
+                                }
+                                composable(BottomMenuItem.NotificationsScreen.route) {
+                                    NotificationsScreen()
+                                }
+                                composable(BottomMenuItem.ProfileScreen.route) {
+                                    ProfileScreen(mainNavController)
+                                }
                             }
                         }
                     }
@@ -144,7 +146,7 @@ fun Main(
                         ) {
                             NavHost(modifier = Modifier.fillMaxSize(), navController = bottomMenuNavController, startDestination = BottomMenuItem.HomeScreen.route) {
                                 composable(BottomMenuItem.HomeScreen.route) {
-                                    HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController)
+                                    HomeScreen(navController = mainNavController, bottomNavController = bottomMenuNavController, onShowModalBottomSheetProductSizes = onShow, onHideModalBottomSheetProductSizes = onHide, drawerMenuState = drawerState, drawerMenuScope = drawerScope)
                                 }
                                 composable(BottomMenuItem.FavoritesScreen.route) {
                                     FavoritesScreen(navController = mainNavController)

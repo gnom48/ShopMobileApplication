@@ -1,6 +1,5 @@
 package com.example.shopmobileapplication.ui.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopmobileapplication.data.Product
 import com.example.shopmobileapplication.data.ProductCategory
 import com.example.shopmobileapplication.data.ProductSize
+import com.example.shopmobileapplication.data.Seller
 import com.example.shopmobileapplication.data.User
 import com.example.shopmobileapplication.data.product.ProductRepository
 import com.example.shopmobileapplication.ui.main.components.CategoriesHelper
@@ -31,14 +31,17 @@ class ProductViewModel(
     private val _product = mutableStateOf<Product?>(null)
     val product by _product
 
+    private val _seller = mutableStateOf<Seller?>(null)
+    val seller by _seller
+
     private val _products = mutableStateOf<List<Product>>(emptyList())
     val products by _products
 
-    private val _favoriteProducts = mutableStateOf<List<Product>>(emptyList())
-    val favoriteProducts by _favoriteProducts
-
-    private val _bucketProducts = mutableStateOf<List<Product>>(emptyList())
-    val bucketProducts by _bucketProducts
+//    private val _favoriteProducts = mutableStateOf<List<Product>>(emptyList())
+//    val favoriteProducts by _favoriteProducts
+//
+//    private val _bucketProducts = mutableStateOf<List<Product>>(emptyList())
+//    val bucketProducts by _bucketProducts
 
     private var _isInFavorites = mutableStateOf(false)
     val isInFavorites by _isInFavorites
@@ -54,25 +57,38 @@ class ProductViewModel(
                     if (p != null) {
                         _product.value = p
                         _error.value = null
-                        Log.d("tmp", "prod: ${_product.value}") ;
 
-                        getProductsInBucket(user)
-                        getProductsInFavorite(user)
+//                        getProductsInBucket(user)
+//                        getProductsInFavorite(user)
                         getProductsSizes(id)
-                        return@withLoading
-                    }
-                }
-                productRepository.getProductById(id).onSuccess {
-                    _product.value = it
-                    _error.value = null
-                    Log.d("tmp", "prod: ${_product.value}") ;
 
-                    getProductsInBucket(user)
-                    getProductsInFavorite(user)
-                    getProductsSizes(id)
-                }.onFailure { e ->
-                    _product.value = null
-                    _error.value = e
+                        productRepository.getSellerById(_product.value!!.sellerId).onSuccess {
+                            _seller.value = it
+                        }.onFailure { e ->
+                            _seller.value = null
+                            _error.value = e
+                        }
+                    }
+                } else {
+                    productRepository.getProductById(id).onSuccess {
+                        _product.value = it
+                        _error.value = null
+
+//                    getProductsInBucket(user)
+//                    getProductsInFavorite(user)
+
+                        productRepository.getSellerById(_product.value!!.sellerId).onSuccess {
+                            _seller.value = it
+                        }.onFailure { e ->
+                            _seller.value = null
+                            _error.value = e
+                        }
+
+                        getProductsSizes(id)
+                    }.onFailure { e ->
+                        _product.value = null
+                        _error.value = e
+                    }
                 }
             }
         }
@@ -142,45 +158,42 @@ class ProductViewModel(
         }
     }
 
-    suspend fun getProductsInBucket(user: User) {
-        viewModelScope.launch {
-            withLoading {
-                productRepository.getProductsInBucket(user).onSuccess {
-                    _bucketProducts.value = it
-                    if (it.map { pr -> pr.id }.contains(_product.value?.id)) {
-                        _isInBucket.value = true
-                    } else {
-                        _isInBucket.value = false
-                    }
-                }.onFailure { e ->
-                    _bucketProducts.value = emptyList()
-                    _error.value = e
-                }
-            }
-        }
-    }
-
-    suspend fun getProductsInFavorite(user: User) {
-        viewModelScope.launch {
-            withLoading {
-                productRepository.getProductsInFavorite(user).onSuccess {
-                    _favoriteProducts.value = it
-                    if (it.map { pr -> pr.id }.contains(_product.value?.id)) {
-                        _isInFavorites.value = true
-                    }else {
-                        _isInFavorites.value = false
-                    }
-                    Log.d("tmp", "fav: ${_isInFavorites.value} \nfrom $it \nfor ${_product.value}") ;
-
-                }.onFailure { e ->
-                    Log.d("tmp", "fav: ${e}") ;
-
-                    _favoriteProducts.value = emptyList()
-                    _error.value = e
-                }
-            }
-        }
-    }
+//    suspend fun getProductsInBucket(user: User) {
+//        viewModelScope.launch {
+//            withLoading {
+//                productRepository.getProductsInBucket(user).onSuccess {
+//                    _bucketProducts.value = it
+//                    if (it.map { pr -> pr.id }.contains(_product.value?.id)) {
+//                        _isInBucket.value = true
+//                    } else {
+//                        _isInBucket.value = false
+//                    }
+//                }.onFailure { e ->
+//                    _bucketProducts.value = emptyList()
+//                    _error.value = e
+//                }
+//            }
+//        }
+//    }
+//
+//    suspend fun getProductsInFavorite(user: User) {
+//        viewModelScope.launch {
+//            withLoading {
+//                productRepository.getProductsInFavorite(user).onSuccess {
+//                    _favoriteProducts.value = it
+//                    if (it.map { pr -> pr.id }.contains(_product.value?.id)) {
+//                        _isInFavorites.value = true
+//                    }else {
+//                        _isInFavorites.value = false
+//                    }
+//
+//                }.onFailure { e ->
+//                    _favoriteProducts.value = emptyList()
+//                    _error.value = e
+//                }
+//            }
+//        }
+//    }
 
     private val _productCategories = mutableStateOf<List<ProductCategory>>(CategoriesHelper.defaultCategoriesList)
     val productCategories by _productCategories

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -52,11 +53,13 @@ import com.example.shopmobileapplication.ui.theme.white
 import com.example.shopmobileapplication.ui.theme.whiteGreyBackground
 import com.example.shopmobileapplication.ui.viewmodel.ProductViewModel
 import com.example.shopmobileapplication.ui.viewmodel.ProductViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(null, null)
+    HomeScreen(null, null, {}, {}, null, null)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,6 +67,10 @@ fun HomeScreenPreview() {
 fun HomeScreen(
     navController: NavController?,
     bottomNavController: NavController?,
+    onShowModalBottomSheetProductSizes: (p: Product) -> Unit,
+    onHideModalBottomSheetProductSizes: () -> Unit,
+    drawerMenuState: DrawerState?,
+    drawerMenuScope: CoroutineScope?,
     productViewModel: ProductViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = ProductViewModelFactory(
         ProductRepositoryImpl(LocalContext.current, SupabaseClient.client)
     )
@@ -116,11 +123,19 @@ fun HomeScreen(
                 }
             },
             navigationIcon = {
-                DriverMenuIconButton {}
+                drawerMenuState?.let { state ->
+                    DriverMenuIconButton {
+                        drawerMenuScope?.let { scope ->
+                            scope.launch {
+                                state.open()
+                            }
+                        }
+                    }
+                }
             },
             actions = {
                 BucketIconButton {
-                    bottomNavController?.navigate(BottomMenuItem.BucketScreen.route) {
+                    navController?.navigate(BottomMenuItem.BucketScreen.route) {
                         launchSingleTop = true
                     }
                 }
@@ -165,10 +180,10 @@ fun HomeScreen(
                 navController = navController,
                 enableScroll = false,
                 onShowProductSizes = { p: Product? ->
-//                            onShow(p) // FIXME: to global bottomsheet
+                    p?.let { onShowModalBottomSheetProductSizes(it) }
                 },
                 onHideProductSizes = {
-//                            onHide() // FIXME: to global bottomsheet
+                    onHideModalBottomSheetProductSizes()
                 }
             )
 

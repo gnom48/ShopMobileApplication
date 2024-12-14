@@ -33,51 +33,6 @@ class NotificationsViewModel(private val repository: NotificationsRepository): B
     private val _notifications = mutableStateOf<List<Notification>>(emptyList())
     val notifications by _notifications
 
-    fun attachToRealtimeByCollect(scope: CoroutineScope, supabaseClient: io.github.jan.supabase.SupabaseClient = com.example.shopmobileapplication.data.network.SupabaseClient.client) {
-        viewModelScope.launch {
-            val ch = supabaseClient.realtime.createChannel(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toString()+UserViewModel.currentUser.id) { }
-
-            ch.postgresChangeFlow<PostgresAction>(schema = "public") {
-                table = Notification.tableName
-            }.collect { action: PostgresAction -> //.onEach { action: PostgresAction ->
-                when(action) {
-                    is PostgresAction.Delete -> { }
-                    is PostgresAction.Update -> {
-                        val ml = _notifications.value.toMutableList()
-                        try {
-                            Gson().fromJson<Notification>(action.record.toString(), Notification::class.java)
-                        } catch (e: Exception) {
-                            null
-                        }?.let { newNotification ->
-                            if (newNotification.userId != UserViewModel.currentUser.id) {
-                                return@let
-                            }
-                            ml.add(newNotification)
-                            _notifications.value = ml
-                            // TODO: update in notification
-                        }
-                    }
-                    is PostgresAction.Insert -> {
-                        val ml = _notifications.value.toMutableList()
-                        try { Gson().fromJson<Notification>(action.record.toString(), Notification::class.java) } catch (e: Exception) { null }?.let { newNotification ->
-                            if (newNotification.userId != UserViewModel.currentUser.id) {
-                                return@let
-                            }
-                            ml.add(newNotification)
-                            _notifications.value = ml
-                            // TODO: update in notification
-                        }
-                    }
-                    is PostgresAction.Select -> { }
-                    else -> { }
-                }
-            }//.launchIn(scope)
-
-            supabaseClient.realtime.connect()
-            ch.join()
-        }
-    }
-
     suspend fun attachToRealtimeByScope(scope: CoroutineScope, supabaseClient: io.github.jan.supabase.SupabaseClient = com.example.shopmobileapplication.data.network.SupabaseClient.client) {
         val ch = supabaseClient.realtime.createChannel(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toString()+UserViewModel.currentUser.id) { }
 

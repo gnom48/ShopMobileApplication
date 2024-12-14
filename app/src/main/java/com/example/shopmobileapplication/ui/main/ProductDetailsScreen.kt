@@ -127,7 +127,7 @@ fun ProductDetailsScreen(
             .background(whiteGreyBackground),
         topBar = {
             CustomTopAppBar(
-                title = stringResource(R.string.sneaker_shop), // TODO: seller name
+                title = productViewModel.seller?.name ?: stringResource(R.string.official_shop),
                 onBackButtonClick = { navController!!.popBackStack() },
                 actionIconButton = {
                     BucketIconButton { }
