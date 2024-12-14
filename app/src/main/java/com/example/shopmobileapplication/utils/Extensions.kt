@@ -10,6 +10,12 @@ fun Uri.uriToBytesArray(context: Context): ByteArray? {
 }
 
 fun getAllSizesRus(start: Double, end: Double, step: Double): List<Double> {
+    if (start < 0 || end < 0) {
+        return emptyList()
+    }
+    if (step <= 0.0 || step >= end) {
+        return listOf(start)
+    }
     return generateSequence(start) { current ->
         if (current + step <= end) current + step else null
     }.toList()

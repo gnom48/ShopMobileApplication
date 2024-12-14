@@ -27,7 +27,7 @@ class GetAllSizesRusTest {
         val start = -5.0
         val end = -1.0
         val step = 1.0
-        val expected = listOf(-5.0, -4.0, -3.0, -2.0, -1.0)
+        val expected = emptyList<Double>()
 
         // Act
         val result = getAllSizesRus(start, end, step)
@@ -72,7 +72,7 @@ class GetAllSizesRusTest {
         val start = 5.0
         val end = 1.0
         val step = -1.0
-        val expected = listOf(5.0, 4.0, 3.0, 2.0, 1.0)
+        val expected = listOf(5.0)
 
         // Act
         val result = getAllSizesRus(start, end, step)

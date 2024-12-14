@@ -101,7 +101,8 @@ fun NotificationsScreen(
             .fillMaxSize()
             .background(Color.Transparent)
             .padding(horizontal = 10.dp)
-            .padding(top = 10.dp)) {
+            .padding(top = 10.dp)
+        ) {
             items(notificationsViewModel.notifications) { notification: Notification ->
                 Card(
                     modifier = Modifier
@@ -112,6 +113,7 @@ fun NotificationsScreen(
                     colors = CardDefaults.cardColors(contentColor = Color.White, containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(0.dp)
                 ) {
+                    var readAt by remember { mutableStateOf(notification.readAt) }
                     var showFullText by remember { mutableStateOf(false) }
                     Column(
                         modifier = Modifier
@@ -130,7 +132,7 @@ fun NotificationsScreen(
                                     .padding(5.dp)
                                     .background(Color.Transparent),
                                 shape = CircleShape,
-                                color = if (notification.readAt != null) Color.LightGray else blueGradientStart
+                                color = if (readAt != null) Color.LightGray else blueGradientStart
                             ) { }
                             Text(text = LocalDateTime.ofEpochSecond(notification.sendAt, 0, ZoneOffset.UTC).format(
                                 DateTimeFormatter.ofPattern("dd.MM.yyyy")), style = ralewaySubregular)
@@ -142,11 +144,11 @@ fun NotificationsScreen(
                                 notification.message
                             },
                             style = ralewayRegular)
-
-                        notification.readAt = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
                         LaunchedEffect(Unit) {
-                            if (notification.readAt == null) {
-                                delay(5000)
+                            if (readAt == null) {
+                                delay(3000)
+                                readAt = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+                                notification.readAt = readAt
                                 notificationsViewModel.updateNotification(notification)
                             }
                         }
