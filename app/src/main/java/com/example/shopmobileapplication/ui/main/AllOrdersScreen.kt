@@ -2,12 +2,14 @@ package com.example.shopmobileapplication.ui.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,10 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -70,13 +74,28 @@ fun AllOrdersScreen(
             actionIconButton = { Spacer(modifier = Modifier.size(36.dp)) }
         )
 
-        val mappedOrdersDetails = orderViewModel.orderDetails.groupBy {
+        val mappedOrdersDetails = orderViewModel.orderDetails.sortedByDescending { it.orderDateTime }.groupBy {
             LocalDateTime.ofEpochSecond(it.orderDateTime, 0, ZoneOffset.UTC).toLocalDate()
         }
         LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(10.dp)) {
+            if (orderViewModel.orderDetails.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(style = ralewaySubtitle, text = stringResource(R.string.here_you_orders), textAlign = TextAlign.Center)
+                    }
+                }
+            }
             mappedOrdersDetails.forEach { (date, orders) ->
                 item {
-                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), horizontalArrangement = Arrangement.End) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp), horizontalArrangement = Arrangement.End
+                    ) {
                         Text(
                             text = if (date == LocalDate.now()) stringResource(R.string.today) else date.toString(),
                             style = ralewaySubtitle,
@@ -89,6 +108,7 @@ fun AllOrdersScreen(
                     OrderItem(data = item) {
                         navController?.navigate(Layouts.ORDER_DETAILS_SCREEN + "/${item.orderId}/PRODUCT/${item.productExampleId}")
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

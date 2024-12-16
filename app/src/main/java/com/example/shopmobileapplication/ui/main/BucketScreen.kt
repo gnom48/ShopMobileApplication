@@ -128,6 +128,7 @@ fun BucketScreen(
             skipHiddenState = true
         )
         FlexibleBottomSheet(
+            modifier = Modifier.fillMaxWidth(),
             onDismissRequest = { },
             sheetState = sheetState,
             onTargetChanges = { sheetValue ->

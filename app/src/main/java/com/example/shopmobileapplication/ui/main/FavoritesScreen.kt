@@ -1,5 +1,6 @@
 package com.example.shopmobileapplication.ui.main
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -73,11 +75,13 @@ fun FavoritesScreen(
             }
         )
     }
-
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTablet = configuration.screenWidthDp >= 600
     ModalBottomSheetProductSizes { onShow, onHide ->
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(bottom = 120.dp)
+                .fillMaxSize().padding(bottom = if (!isTablet && !isLandscape) 120.dp else 0.dp)
                 .background(whiteGreyBackground)
         ) {
             CustomTopAppBar(

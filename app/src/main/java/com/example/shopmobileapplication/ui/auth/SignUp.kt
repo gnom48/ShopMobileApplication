@@ -65,6 +65,7 @@ import com.example.shopmobileapplication.ui.theme.ralewayTitle
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
 import com.example.shopmobileapplication.utils.SharedPreferecesHelper
+import io.github.jan.supabase.exceptions.BadRequestRestException
 
 @Preview
 @Composable
@@ -88,7 +89,11 @@ fun SignUp(
         CustomAlertDialog(
             imageResId = R.drawable.message_icon,
             title = stringResource(R.string.error),
-            message = userViewModel.error?.message ?: "Ошибка взаимодействия с сервером",
+            message = if (it is BadRequestRestException) {
+                userViewModel.error?.toString()?.split(':')?.getOrNull(1) ?: "Ошибка взаимодействия с сервером"
+            } else {
+                "Ошибка взаимодействия с сервером"
+            },
             onDismiss = {
                 userViewModel.dismissError()
             },

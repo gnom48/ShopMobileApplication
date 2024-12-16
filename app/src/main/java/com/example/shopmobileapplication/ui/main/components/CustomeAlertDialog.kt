@@ -70,7 +70,7 @@ fun CustomAlertDialog(
                 Text(
                     text = message,
                     style = ralewaySubregular,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp).weight(0.6f)
                 )
 
                 androidx.compose.material3.Button(

@@ -1,5 +1,6 @@
 package com.example.shopmobileapplication.ui.main.menu
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
@@ -25,11 +24,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.data.network.SupabaseClient
 import com.example.shopmobileapplication.data.user.UserRepositoryImpl
@@ -44,6 +49,7 @@ import com.example.shopmobileapplication.ui.Layouts
 import com.example.shopmobileapplication.ui.theme.blueGradientStart
 import com.example.shopmobileapplication.ui.theme.ralewayRegular
 import com.example.shopmobileapplication.ui.theme.ralewayTitle
+import com.example.shopmobileapplication.ui.viewmodel.SupabaseViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModel
 import com.example.shopmobileapplication.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -61,10 +67,12 @@ fun DrawerMenuContent(
     bottomNavController: NavController?,
     drawerScope: CoroutineScope?,
     drawerState: DrawerState?,
-    userViewModel: UserViewModel = viewModel(viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
-        UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
-    )
-    )
+    userViewModel: UserViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!, factory = UserViewModelFactory(
+            UserRepositoryImpl(LocalContext.current, SupabaseClient.client)
+        )
+    ),
+    supabaseViewModel: SupabaseViewModel = viewModel()
 ) {
     Box {
         Box(
@@ -73,19 +81,24 @@ fun DrawerMenuContent(
                 .background(blueGradientStart),
             contentAlignment = Alignment.CenterEnd
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(vertical = 100.dp)
-                    .clickable {
-                        drawerScope?.launch {
-                            drawerState?.close()
-                        }
-                    },
-                painter = painterResource(id = R.drawable.app_preview),
-                contentDescription = "preview",
-                contentScale = ContentScale.FillHeight
-            )
+            val configuration = LocalConfiguration.current
+            val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            val isTablet = configuration.screenWidthDp >= 600
+            if (!isTablet && !isLandscape) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 100.dp)
+                        .clickable {
+                            drawerScope?.launch {
+                                drawerState?.close()
+                            }
+                        },
+                    painter = painterResource(id = R.drawable.app_preview),
+                    contentDescription = "preview",
+                    contentScale = ContentScale.FillHeight
+                )
+            }
         }
 
         Column(
@@ -111,15 +124,28 @@ fun DrawerMenuContent(
                         shape = CircleShape,
                         color = Color.LightGray
                     ) {
-                        Image(imageVector = Icons.Default.AccountCircle, colorFilter = ColorFilter.tint(
-                            Color.White), contentDescription = "avatar", contentScale = ContentScale.Crop)
+                        var avatarUrl by remember { mutableStateOf<String?>(null) }
+                        LaunchedEffect(Unit) {
+                            supabaseViewModel.getSignedUrlFromPrivateBucket(UserViewModel.currentUser.id, UserViewModel.currentUser.image.toString()) { url: String? ->
+                                avatarUrl = url
+                            }
+                        }
+                        AsyncImage(
+                            model = avatarUrl,
+                            error = painterResource(R.drawable.avatar_default_icon),
+                            contentDescription = "avatar",
+                            contentScale = ContentScale.Crop
+                        )
                     }
                     Text(text = UserViewModel.currentUser.name, style = ralewayTitle, color = Color.White, modifier = Modifier.padding(10.dp))
 
                 }
                 items(navigationItems) { item: NavigationItem ->
                     if (item is DrawerMenuItem.Exit) {
-                        HorizontalDivider(color = Color.LightGray, modifier = Modifier.width(80.dp).padding(start = 20.dp).padding(vertical = 10.dp))
+                        HorizontalDivider(color = Color.LightGray, modifier = Modifier
+                            .width(80.dp)
+                            .padding(start = 20.dp)
+                            .padding(vertical = 10.dp))
                     }
                     Button(
                         onClick = {
