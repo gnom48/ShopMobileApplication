@@ -43,6 +43,7 @@ fun CustomAlertDialog(
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
+            modifier = Modifier.wrapContentHeight().padding(vertical = 40.dp, horizontal = 10.dp),
             shape = RoundedCornerShape(16.dp),
             elevation = 8.dp
         ) {
@@ -70,7 +71,7 @@ fun CustomAlertDialog(
                 Text(
                     text = message,
                     style = ralewaySubregular,
-                    modifier = Modifier.padding(bottom = 16.dp).weight(0.6f)
+                    modifier = Modifier.padding(bottom = 16.dp).weight(1f)
                 )
 
                 androidx.compose.material3.Button(

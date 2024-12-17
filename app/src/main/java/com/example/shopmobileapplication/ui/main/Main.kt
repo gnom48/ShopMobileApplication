@@ -16,7 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -52,6 +56,7 @@ fun Main(
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val isTablet = configuration.screenWidthDp >= 600
 
+    var onHideDrawerMenu by remember { mutableStateOf<suspend () -> Unit>({}) }
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -70,7 +75,7 @@ fun Main(
                             .wrapContentHeight(),
                         color = Color.Transparent
                     ) {
-                        MainBottomNavigation(navController = bottomMenuNavController, mainNavController = mainNavController)
+                        MainBottomNavigation(navController = bottomMenuNavController, mainNavController = mainNavController, onHideDrawerMenu = onHideDrawerMenu)
                     }
                 }
             },
@@ -136,6 +141,9 @@ fun Main(
                                     drawerScope = drawerScope,
                                     drawerState = drawerState
                                 )
+                                onHideDrawerMenu = {
+                                    drawerState.close()
+                                }
                             }
                         }
                     ) {

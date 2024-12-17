@@ -18,6 +18,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shopmobileapplication.R
 import com.example.shopmobileapplication.ui.theme.mainMenuIconSelected
 import com.example.shopmobileapplication.ui.theme.mainMenuIconUnselected
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview
@@ -43,7 +45,7 @@ fun BottomNavigationPreview() {
                     .wrapContentHeight()
                     .fillMaxWidth()
             ) {
-                MainBottomNavigation(navController = null, mainNavController = null)
+                MainBottomNavigation(navController = null, mainNavController = null) {}
             }
         }
     ) {
@@ -56,14 +58,25 @@ fun BottomNavigationPreview() {
 }
 
 @Composable
-fun MainBottomNavigation(navController: NavController?, mainNavController: NavController?) {
-    val bottomNavigationItems = listOf(BottomMenuItem.HomeScreen, BottomMenuItem.FavoritesScreen, BottomMenuItem.BucketScreen, BottomMenuItem.NotificationsScreen, BottomMenuItem.ProfileScreen)
+fun MainBottomNavigation(
+    navController: NavController?,
+    mainNavController: NavController?,
+    onHideDrawerMenu: suspend () -> Unit
+) {
+    val bottomNavigationItems = listOf(
+        BottomMenuItem.HomeScreen,
+        BottomMenuItem.FavoritesScreen,
+        BottomMenuItem.BucketScreen,
+        BottomMenuItem.NotificationsScreen,
+        BottomMenuItem.ProfileScreen
+    )
+
+    val scope = rememberCoroutineScope()
     
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent),
-//            .background(whiteGreyBackground),
         contentAlignment = Alignment.BottomCenter
     ) {
         Box (
@@ -75,7 +88,7 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
                     .fillMaxWidth()
                     .height(90.dp),
                 painter = painterResource(R.drawable.rounded_bottom_menu_res),
-                contentDescription = "Меню",
+                contentDescription = "Menu",
                 contentScale = ContentScale.FillBounds
             )
         }
@@ -94,6 +107,9 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
                         onClick = {
                             navController!!.navigate(item.route) {
                                 launchSingleTop = true
+                            }
+                            scope.launch {
+                                onHideDrawerMenu()
                             }
                         },
                         icon = {
@@ -114,7 +130,9 @@ fun MainBottomNavigation(navController: NavController?, mainNavController: NavCo
         }
 
         IconButton(
-            modifier = Modifier.padding(bottom = 50.dp).background(shape = CircleShape, color = mainMenuIconSelected),
+            modifier = Modifier
+                .padding(bottom = 50.dp)
+                .background(shape = CircleShape, color = mainMenuIconSelected),
             onClick = {
                 mainNavController!!.navigate(BottomMenuItem.BucketScreen.route) {
                     launchSingleTop = true
