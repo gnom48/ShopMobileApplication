@@ -85,7 +85,7 @@ fun CustomLazyVerticalGrid(
     if (enableScroll) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Adaptive(minSize = 120.dp), //GridCells.Fixed(columns),
+            columns = GridCells.Adaptive(minSize = 160.dp), //GridCells.Fixed(columns),
             contentPadding = PaddingValues(5.dp)
         ) {
             items(source) { item ->

@@ -174,7 +174,7 @@ fun OrderItem(
                     ) {
                         Text(
                             modifier = Modifier.padding(end = 30.dp),
-                            text = "₽" + data.price.toString(),
+                            text = "₽" + (data.price * data.quantityInOrder).toString(),
                             style = ralewayRegular
                         )
                         Text(
